@@ -28,7 +28,7 @@ namespace TextBasedCardGame
         {
             for (int i = 0; i < 52; i++)
             {
-                Card card = new Card("+1 Damage");
+                Card card = new Card((i + 1).ToString(), 0);
                 cards.Add(card);
             }
         }

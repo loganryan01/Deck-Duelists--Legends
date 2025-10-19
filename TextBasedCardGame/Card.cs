@@ -14,9 +14,16 @@ namespace TextBasedCardGame
             get { return name; }
         }
 
-        public Card(string name)
+        private readonly int effectIndex;
+        public int EffectIndex
+        {
+            get { return effectIndex; }
+        }
+
+        public Card(string name, int effectIndex)
         {
             this.name = name;
+            this.effectIndex = effectIndex;
         }
     }
 }
