@@ -17,13 +17,15 @@ namespace TextBasedCardGame
     public class Game
     {
         private readonly GameState state = GameState.PlayGame;
+        private int turnNumber = 1;
 
         private const string cardPrintFormat = "[{0}] {1}";
         private const string heroInfoFormat = "Health = {0}\tAttack = {1}";
+        private const string turnInfoFormat = "Turn: {0}";
 
         // Player Info
-        private Deck playerDeck = new Deck();
-        private List<Card> playerHand = new List<Card>();
+        private readonly Deck playerDeck = new Deck();
+        private readonly List<Card> playerHand = new List<Card>();
         private int playerHeroHealth = 20;
         private int playerHeroAttack = 1;
 
@@ -42,11 +44,16 @@ namespace TextBasedCardGame
             {
                 // Draw
                 DrawGameBoard();
+                DrawGameBoard();
             }
         }
 
         public void DrawGameBoard()
         {
+            // Print Turn number
+            Console.WriteLine("==============================");
+            Console.WriteLine(string.Format(turnInfoFormat, turnNumber));
+
             // Print Enemy hero stats
             Console.WriteLine("==============================");
             Console.WriteLine("\tEnemy Hero:");
@@ -56,18 +63,26 @@ namespace TextBasedCardGame
             Console.WriteLine("\tPlayer Hero:");
             Console.WriteLine(string.Format(heroInfoFormat, playerHeroHealth, playerHeroAttack));
             Console.WriteLine("==============================");
-
-            // Print Player hand
-            for (int i = 0; i < 3; i++)
+            
+            // Draw player hand
+            while (playerHand.Count < 3)
             {
                 Card card = playerDeck.DrawCard();
-                Console.WriteLine(string.Format(cardPrintFormat, i + 1, card.Name));
                 playerHand.Add(card);
+            }
+
+            // Print Player hand
+            int i = 0;
+            foreach (Card card in playerHand)
+            {
+                Console.WriteLine(string.Format(cardPrintFormat, i + 1, card.Name));
+                i++;
             }
             Console.WriteLine("==============================");
 
             // Get Player input
             Console.WriteLine("What card do you want to play?");
+            Console.WriteLine("==============================");
             try
             {
                 int chosenCardIndex = Convert.ToInt32(Console.ReadLine()) - 1;
@@ -83,6 +98,9 @@ namespace TextBasedCardGame
 
                     // Attack the Enemy hero
                     enemyHeroHealth -= playerHeroAttack;
+
+                    // End of turn
+                    turnNumber++;
                 }
                 else
                 {
