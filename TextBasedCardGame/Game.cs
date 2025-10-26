@@ -6,22 +6,15 @@ using System.Threading.Tasks;
 
 namespace TextBasedCardGame
 {
-    public enum GameState
-    {
-        MainMenu,
-        PlayGame,
-        PlayerVictory,
-        PlayerDefeat
-    }
-    
     public class Game
     {
-        private readonly GameState state = GameState.PlayGame;
         private int turnNumber = 1;
 
+        private const string splitterText = "==============================";
         private const string cardPrintFormat = "[{0}] {1}";
         private const string heroInfoFormat = "Health = {0}\tAttack = {1}";
         private const string turnInfoFormat = "Turn: {0}";
+        private const string enemyActionFormat = "Enemy has played '{0}'";
 
         // Player Info
         private readonly Deck playerDeck = new Deck();
@@ -30,6 +23,8 @@ namespace TextBasedCardGame
         private int playerHeroAttack = 1;
 
         // Enemy Info
+        private readonly Deck enemyDeck = new Deck();
+        private readonly List<Card> enemyHand = new List<Card>();
         private int enemyHeroHealth = 20;
         private int enemyHeroAttack = 1;
         
@@ -40,31 +35,47 @@ namespace TextBasedCardGame
 
         public void StartGame()
         {
-            if (state == GameState.PlayGame)
+            while (true)
             {
-                // Draw
                 DrawGameBoard();
+                HandlePlayerTurn();
+                if (enemyHeroHealth <= 0)
+                {
+                    Console.WriteLine("Congratulations! You Win!");
+                    break;
+                }
+
                 DrawGameBoard();
+                HandleEnemyTurn();
+                if (playerHeroHealth <= 0)
+                {
+                    Console.WriteLine("Sorry... You Lose...");
+                    break;
+                }
             }
+            
         }
 
-        public void DrawGameBoard()
+        private void DrawGameBoard()
         {
             // Print Turn number
-            Console.WriteLine("==============================");
+            Console.WriteLine(splitterText);
             Console.WriteLine(string.Format(turnInfoFormat, turnNumber));
 
             // Print Enemy hero stats
-            Console.WriteLine("==============================");
+            Console.WriteLine(splitterText);
             Console.WriteLine("\tEnemy Hero:");
             Console.WriteLine(string.Format(heroInfoFormat, enemyHeroHealth, enemyHeroAttack) + "\n\n\n\n");
             
             // Print Player hero stats
             Console.WriteLine("\tPlayer Hero:");
             Console.WriteLine(string.Format(heroInfoFormat, playerHeroHealth, playerHeroAttack));
-            Console.WriteLine("==============================");
-            
-            // Draw player hand
+            Console.WriteLine(splitterText);
+        }
+
+        private void HandlePlayerTurn()
+        {
+            // Draw Player hand
             while (playerHand.Count < 3)
             {
                 Card card = playerDeck.DrawCard();
@@ -78,43 +89,76 @@ namespace TextBasedCardGame
                 Console.WriteLine(string.Format(cardPrintFormat, i + 1, card.Name));
                 i++;
             }
-            Console.WriteLine("==============================");
+            Console.WriteLine(splitterText);
 
             // Get Player input
             Console.WriteLine("What card do you want to play?");
-            Console.WriteLine("==============================");
-            try
+            Console.WriteLine(splitterText);
+
+            bool successfulInput = false;
+            while (!successfulInput)
             {
-                int chosenCardIndex = Convert.ToInt32(Console.ReadLine()) - 1;
-                if (chosenCardIndex >= 0 && chosenCardIndex <= 2)
+                try
                 {
-                    // Activate card's effect
-                    if (playerHand[chosenCardIndex].EffectIndex == 0) 
+                    int chosenCardIndex = Convert.ToInt32(Console.ReadLine()) - 1;
+                    if (chosenCardIndex >= 0 && chosenCardIndex <= 2)
                     {
-                        // Assume effectIndex 0 is to increase hero's attack by 1
-                        playerHeroAttack++;
+                        successfulInput = true;
+
+                        // Activate card's effect
+                        if (playerHand[chosenCardIndex].EffectIndex == 0)
+                        {
+                            // Assume effectIndex 0 is to increase hero's attack by 1
+                            playerHeroAttack++;
+                        }
+                        playerHand.RemoveAt(chosenCardIndex);
+
+                        // Attack the Enemy hero
+                        enemyHeroHealth -= playerHeroAttack;
+
+                        // End of turn
+                        Console.WriteLine();
                     }
-                    playerHand.RemoveAt(chosenCardIndex);
-
-                    // Attack the Enemy hero
-                    enemyHeroHealth -= playerHeroAttack;
-
-                    // End of turn
-                    turnNumber++;
+                    else
+                    {
+                        // Print message to tell the player they need input a number between 1 and 3
+                        // Then reset the player's turn
+                        Console.WriteLine("Need a number between 1 and 3");
+                    }
                 }
-                else
+                catch (Exception)
                 {
-                    // Print message to tell the player they need input a number between 1 and 3
+                    // Print message to tell the player they need input a number and not a letter
                     // Then reset the player's turn
+                    Console.WriteLine("Need a number between 1 and 3");
                 }
             }
-            catch (Exception)
+        }
+
+        private void HandleEnemyTurn()
+        {
+            // Draw Enemy hand
+            while (enemyHand.Count < 3)
             {
-                // Print message to tell the player they need input a number and not a letter
-                // Then reset the player's turn
-                Console.WriteLine("Need a number");
+                Card card = enemyDeck.DrawCard();
+                enemyHand.Add(card);
             }
-            
+
+            // Get card from enemy hand
+            if (enemyHand[0].EffectIndex == 0)
+            {
+                // Assume effectIndex 0 is to increase hero's attack by 1
+                Console.WriteLine(string.Format(enemyActionFormat, enemyHand[0].Name));
+                enemyHeroAttack++;
+            }
+            enemyHand.RemoveAt(0);
+
+            // Attack the Player hero
+            playerHeroHealth -= enemyHeroAttack;
+
+            // End of turn
+            turnNumber++;
+            Console.WriteLine();
         }
     }
 }
