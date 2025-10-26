@@ -26,10 +26,30 @@ namespace TextBasedCardGame
 
         private void CreateDeck()
         {
+            Card? card = null;
             for (int i = 0; i < 52; i++)
             {
-                Card card = new Card((i + 1).ToString(), 0);
-                cards.Add(card);
+                if (i < 13)
+                {
+                    card = new Card("+1 Hero Attack", 0);
+                }
+                else if (i < 26)
+                {
+                    card = new Card("+1 Hero Health", 1);
+                }
+                else if (i < 39)
+                {
+                    card = new Card("-1 Enemy Attack", 2);
+                }
+                else if (i < 52)
+                {
+                    card = new Card("-1 Enemy Health", 3);
+                }
+
+                if (card != null)
+                {
+                    cards.Add(card);
+                }
             }
         }
 

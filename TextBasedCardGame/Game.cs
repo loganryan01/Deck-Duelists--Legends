@@ -41,6 +41,7 @@ namespace TextBasedCardGame
                 HandlePlayerTurn();
                 if (enemyHeroHealth <= 0)
                 {
+                    DrawGameBoard();
                     Console.WriteLine("Congratulations! You Win!");
                     break;
                 }
@@ -49,6 +50,7 @@ namespace TextBasedCardGame
                 HandleEnemyTurn();
                 if (playerHeroHealth <= 0)
                 {
+                    DrawGameBoard();
                     Console.WriteLine("Sorry... You Lose...");
                     break;
                 }
@@ -106,15 +108,28 @@ namespace TextBasedCardGame
                         successfulInput = true;
 
                         // Activate card's effect
-                        if (playerHand[chosenCardIndex].EffectIndex == 0)
+                        switch (playerHand[chosenCardIndex].EffectIndex)
                         {
-                            // Assume effectIndex 0 is to increase hero's attack by 1
-                            playerHeroAttack++;
+                            case 0:
+                                playerHeroAttack++;
+                                break;
+                            case 1:
+                                playerHeroHealth++;
+                                break;
+                            case 2:
+                                enemyHeroAttack--;
+                                break;
+                            case 3:
+                                enemyHeroHealth--;
+                                break;
                         }
                         playerHand.RemoveAt(chosenCardIndex);
 
                         // Attack the Enemy hero
-                        enemyHeroHealth -= playerHeroAttack;
+                        if (playerHeroAttack > 0)
+                        {
+                            enemyHeroHealth -= playerHeroAttack;
+                        }
 
                         // End of turn
                         Console.WriteLine();
@@ -145,12 +160,22 @@ namespace TextBasedCardGame
             }
 
             // Get card from enemy hand
-            if (enemyHand[0].EffectIndex == 0)
+            switch (enemyHand[0].EffectIndex)
             {
-                // Assume effectIndex 0 is to increase hero's attack by 1
-                Console.WriteLine(string.Format(enemyActionFormat, enemyHand[0].Name));
-                enemyHeroAttack++;
+                case 0:
+                    enemyHeroAttack++;
+                    break;
+                case 1:
+                    enemyHeroHealth++;
+                    break;
+                case 2:
+                    playerHeroAttack--;
+                    break;
+                case 3:
+                    playerHeroHealth--;
+                    break;
             }
+            Console.WriteLine(string.Format(enemyActionFormat, enemyHand[0].Name));
             enemyHand.RemoveAt(0);
 
             // Attack the Player hero
