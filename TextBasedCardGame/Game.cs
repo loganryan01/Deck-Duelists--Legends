@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace TextBasedCardGame
 {
+    public enum GameTurnState
+    {
+        Player = 0,
+        Enemy = 1
+    }
+
     public class Game
     {
         private const int STARTING_TURN_NUMBER = 1;
@@ -41,28 +47,69 @@ namespace TextBasedCardGame
 
         public void StartGame()
         {
+            GameTurnState gameTurnState = DetermineFirstTurn();
             while (true)
             {
-                DrawGameBoard();
-                HandlePlayerTurn();
-                if (enemyHeroHealth <= 0)
+                // If it's the player's turn,
+                if (gameTurnState == GameTurnState.Player)
                 {
+                    // Pre-player turn check
+                    if (playerDeck.Cards.Count == 0)
+                    {
+                        DrawGameBoard();
+                        Console.WriteLine("Sorry... You Lose...");
+                        Console.WriteLine("Press any key to continue...");
+                        Console.ReadKey(true);
+                        break;
+                    }
+
+                    // Do player turn
                     DrawGameBoard();
-                    Console.WriteLine("Congratulations! You Win!");
-                    Console.WriteLine("Press any key to continue...");
-                    Console.ReadKey(true);
-                    break;
+                    HandlePlayerTurn();
+
+                    // Post-player turn check
+                    if (enemyHeroHealth <= 0)
+                    {
+                        DrawGameBoard();
+                        Console.WriteLine("Congratulations! You Win!");
+                        Console.WriteLine("Press any key to continue...");
+                        Console.ReadKey(true);
+                        break;
+                    }
+
+                    // Pass the turn to the enemy
+                    gameTurnState = GameTurnState.Enemy;
                 }
 
-                DrawGameBoard();
-                HandleEnemyTurn();
-                if (playerHeroHealth <= 0)
+                // If it's the enemy's turn,
+                if (gameTurnState == GameTurnState.Enemy)
                 {
+                    // Pre-enemy turn check
+                    if (enemyDeck.Cards.Count == 0)
+                    {
+                        DrawGameBoard();
+                        Console.WriteLine("Congratulations! You Win!");
+                        Console.WriteLine("Press any key to continue...");
+                        Console.ReadKey(true);
+                        break;
+                    }
+
+                    // Do enemy turn
                     DrawGameBoard();
-                    Console.WriteLine("Sorry... You Lose...");
-                    Console.WriteLine("Press any key to continue...");
-                    Console.ReadKey(true);
-                    break;
+                    HandleEnemyTurn();
+
+                    // Post-enemy turn check
+                    if (playerHeroHealth <= 0)
+                    {
+                        DrawGameBoard();
+                        Console.WriteLine("Sorry... You Lose...");
+                        Console.WriteLine("Press any key to continue...");
+                        Console.ReadKey(true);
+                        break;
+                    }
+
+                    // Pass the turn to the player
+                    gameTurnState = GameTurnState.Player;
                 }
             }
             
@@ -72,43 +119,70 @@ namespace TextBasedCardGame
         {
             int playerWins = 0;
             int enemyWins = 0;
+            GameTurnState gameTurnState;
 
             for (int i = 0; i < 100; i++)
             {
+                gameTurnState = DetermineFirstTurn();
                 while (true)
                 {
-                    HandlePlayerTurnSim();
-                    if (enemyHeroHealth <= 0)
+                    // If it's the player's turn,
+                    if (gameTurnState == GameTurnState.Player)
                     {
-                        Console.WriteLine(string.Format(PLAYER_WINS_SIM_FORMAT, (i + 1).ToString(), turnNumber.ToString()));
-                        playerWins++;
-                        break;
-                    }
-                    if (playerDeck.Cards.Count == 0)
-                    {
-                        Console.WriteLine(string.Format(ENEMY_WINS_SIM_FORMAT, (i + 1).ToString(), turnNumber.ToString()));
-                        enemyWins++;
-                        break;
+                        // Pre-player turn check
+                        if (playerDeck.Cards.Count == 0)
+                        {
+                            Console.WriteLine(string.Format(ENEMY_WINS_SIM_FORMAT, (i + 1).ToString(), turnNumber.ToString()));
+                            enemyWins++;
+                            break;
+                        }
+
+                        // Do player turn
+                        HandlePlayerTurnSim();
+
+                        // Post-player turn check
+                        if (enemyHeroHealth <= 0)
+                        {
+                            Console.WriteLine(string.Format(PLAYER_WINS_SIM_FORMAT, (i + 1).ToString(), turnNumber.ToString()));
+                            playerWins++;
+                            break;
+                        }
+
+                        // Pass the turn to the enemy
+                        gameTurnState = GameTurnState.Enemy;
                     }
 
-                    HandleEnemyTurnSim();
-                    if (playerHeroHealth <= 0)
+                    // If it's the enemy's turn,
+                    if (gameTurnState == GameTurnState.Enemy)
                     {
-                        Console.WriteLine(string.Format(ENEMY_WINS_SIM_FORMAT, (i + 1).ToString(), turnNumber.ToString()));
-                        enemyWins++;
-                        break;
-                    }
-                    if (enemyDeck.Cards.Count == 0)
-                    {
-                        Console.WriteLine(string.Format(PLAYER_WINS_SIM_FORMAT, (i + 1).ToString(), turnNumber.ToString()));
-                        playerWins++;
-                        break;
+                        // Pre-enemy turn check
+                        if (enemyDeck.Cards.Count == 0)
+                        {
+                            Console.WriteLine(string.Format(PLAYER_WINS_SIM_FORMAT, (i + 1).ToString(), turnNumber.ToString()));
+                            playerWins++;
+                            break;
+                        }
+
+                        // Do enemy turn
+                        HandleEnemyTurnSim();
+
+                        // Post-enemy turn check
+                        if (playerHeroHealth <= 0)
+                        {
+                            Console.WriteLine(string.Format(ENEMY_WINS_SIM_FORMAT, (i + 1).ToString(), turnNumber.ToString()));
+                            enemyWins++;
+                            break;
+                        }
+
+                        // Pass the turn to the player
+                        gameTurnState = GameTurnState.Player;
                     }
                 }
 
                 ResetGame();
             }
 
+            // Print simulation information
             Console.WriteLine("\nPlayer has won " + playerWins.ToString() + " games");
             Console.WriteLine("Enemy has won " + enemyWins.ToString() + " games");
         }
@@ -128,6 +202,13 @@ namespace TextBasedCardGame
 
             enemyHeroAttack = STARTING_HERO_ATTACK;
             enemyHeroHealth = STARTING_HERO_HEALTH;
+        }
+
+        private static GameTurnState DetermineFirstTurn()
+        {
+            Random random = new Random();
+            int playerNumber = random.Next(2);
+            return (GameTurnState)playerNumber;
         }
 
         private void DrawGameBoard()
