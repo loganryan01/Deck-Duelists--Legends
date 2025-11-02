@@ -2,7 +2,7 @@
 {
     static class Program
     {
-        private static bool isSimEnabled = true;
+        private static bool isSimEnabled = false;
         
         static void Main(string[] args)
         {
