@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TextBasedCardGame
+{
+    public static class GameConstants
+    {
+        public const int STARTING_TURN_NUMBER = 1;
+        public const int STARTING_HERO_HEALTH = 20;
+        public const int STARTING_HERO_ATTACK = 1;
+
+        public const string SPLITTER_TEXT = "==============================";
+        public const string CARD_PRINT_FORMAT = "[{0}] {1}";
+        public const string HERO_INFO_FORMAT = "Health = {0}\tAttack = {1}";
+        public const string TURN_INFO_FORMAT = "Turn: {0}";
+        public const string ENEMY_ACTION_FORMAT = "Enemy has played '{0}'";
+        public const string PLAYER_WINS_SIM_FORMAT = "Player wins Game {0} by Turn {1}";
+        public const string ENEMY_WINS_SIM_FORMAT = "Enemy wins Game {0} by Turn {1}";
+    }
+}

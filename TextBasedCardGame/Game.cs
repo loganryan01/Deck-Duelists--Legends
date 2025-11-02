@@ -14,29 +14,15 @@ namespace TextBasedCardGame
 
     public class Game
     {
-        #region Constants
-        private const int STARTING_TURN_NUMBER = 1;
-        private const int STARTING_HERO_HEALTH = 20;
-        private const int STARTING_HERO_ATTACK = 1;
-
-        private const string SPLITTER_TEXT = "==============================";
-        private const string CARD_PRINT_FORMAT = "[{0}] {1}";
-        private const string HERO_INFO_FORMAT = "Health = {0}\tAttack = {1}";
-        private const string TURN_INFO_FORMAT = "Turn: {0}";
-        private const string ENEMY_ACTION_FORMAT = "Enemy has played '{0}'";
-        private const string PLAYER_WINS_SIM_FORMAT = "Player wins Game {0} by Turn {1}";
-        private const string ENEMY_WINS_SIM_FORMAT = "Enemy wins Game {0} by Turn {1}";
-        #endregion
-
-        private int turnNumber = STARTING_TURN_NUMBER;
+        private int turnNumber = GameConstants.STARTING_TURN_NUMBER;
         private int simGameNumber = 0;
         private readonly Stack<Action> gameActions = new Stack<Action>();
 
         // Player Info
         private Deck playerDeck = new Deck();
         private readonly List<Card> playerHand = new List<Card>();
-        private int playerHeroHealth = STARTING_HERO_HEALTH;
-        private int playerHeroAttack = STARTING_HERO_ATTACK;
+        private int playerHeroHealth = GameConstants.STARTING_HERO_HEALTH;
+        private int playerHeroAttack = GameConstants.STARTING_HERO_ATTACK;
 
         private Action prePlayerTurnAction;
         private Action playerTurnAction;
@@ -47,8 +33,8 @@ namespace TextBasedCardGame
         // Enemy Info
         private Deck enemyDeck = new Deck();
         private readonly List<Card> enemyHand = new List<Card>();
-        private int enemyHeroHealth = STARTING_HERO_HEALTH;
-        private int enemyHeroAttack = STARTING_HERO_ATTACK;
+        private int enemyHeroHealth = GameConstants.STARTING_HERO_HEALTH;
+        private int enemyHeroAttack = GameConstants.STARTING_HERO_ATTACK;
 
         private Action preEnemyTurnAction;
         private Action enemyTurnAction;
@@ -138,19 +124,19 @@ namespace TextBasedCardGame
 
         private void ResetGame()
         {
-            turnNumber = STARTING_TURN_NUMBER;
+            turnNumber = GameConstants.STARTING_TURN_NUMBER;
 
             playerDeck = new Deck();
             playerHand.Clear();
 
-            playerHeroAttack = STARTING_HERO_ATTACK;
-            playerHeroHealth = STARTING_HERO_HEALTH;
+            playerHeroAttack = GameConstants.STARTING_HERO_ATTACK;
+            playerHeroHealth = GameConstants.STARTING_HERO_HEALTH;
 
             enemyDeck = new Deck();
             enemyHand.Clear();
 
-            enemyHeroAttack = STARTING_HERO_ATTACK;
-            enemyHeroHealth = STARTING_HERO_HEALTH;
+            enemyHeroAttack = GameConstants.STARTING_HERO_ATTACK;
+            enemyHeroHealth = GameConstants.STARTING_HERO_HEALTH;
         }
 
         private static GameTurnState DetermineFirstTurn()
@@ -163,18 +149,18 @@ namespace TextBasedCardGame
         private void DrawGameBoard()
         {
             // Print Turn number
-            Console.WriteLine(SPLITTER_TEXT);
-            Console.WriteLine(string.Format(TURN_INFO_FORMAT, turnNumber));
+            Console.WriteLine(GameConstants.SPLITTER_TEXT);
+            Console.WriteLine(string.Format(GameConstants.TURN_INFO_FORMAT, turnNumber));
 
             // Print Enemy hero stats
-            Console.WriteLine(SPLITTER_TEXT);
+            Console.WriteLine(GameConstants.SPLITTER_TEXT);
             Console.WriteLine("\tEnemy Hero:");
-            Console.WriteLine(string.Format(HERO_INFO_FORMAT, enemyHeroHealth, enemyHeroAttack) + "\n\n\n\n");
+            Console.WriteLine(string.Format(GameConstants.HERO_INFO_FORMAT, enemyHeroHealth, enemyHeroAttack) + "\n\n\n\n");
             
             // Print Player hero stats
             Console.WriteLine("\tPlayer Hero:");
-            Console.WriteLine(string.Format(HERO_INFO_FORMAT, playerHeroHealth, playerHeroAttack));
-            Console.WriteLine(SPLITTER_TEXT);
+            Console.WriteLine(string.Format(GameConstants.HERO_INFO_FORMAT, playerHeroHealth, playerHeroAttack));
+            Console.WriteLine(GameConstants.SPLITTER_TEXT);
         }
 
         #region Player Actions
@@ -206,14 +192,14 @@ namespace TextBasedCardGame
             int i = 0;
             foreach (Card card in playerHand)
             {
-                Console.WriteLine(string.Format(CARD_PRINT_FORMAT, i + 1, card.Name));
+                Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, i + 1, card.Name));
                 i++;
             }
-            Console.WriteLine(SPLITTER_TEXT);
+            Console.WriteLine(GameConstants.SPLITTER_TEXT);
 
             // Get Player input
             Console.WriteLine("What card do you want to play?");
-            Console.WriteLine(SPLITTER_TEXT);
+            Console.WriteLine(GameConstants.SPLITTER_TEXT);
 
             bool successfulInput = false;
             while (!successfulInput)
@@ -289,7 +275,7 @@ namespace TextBasedCardGame
         {
             if (playerDeck.Cards.Count == 0)
             {
-                Console.WriteLine(string.Format(ENEMY_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
+                Console.WriteLine(string.Format(GameConstants.ENEMY_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
                 enemyWins++;
             }
             else
@@ -338,7 +324,7 @@ namespace TextBasedCardGame
         {
             if (enemyHeroHealth <= 0)
             {
-                Console.WriteLine(string.Format(PLAYER_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
+                Console.WriteLine(string.Format(GameConstants.PLAYER_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
                 playerWins++;
             }
             else
@@ -394,7 +380,7 @@ namespace TextBasedCardGame
                     playerHeroHealth--;
                     break;
             }
-            Console.WriteLine(string.Format(ENEMY_ACTION_FORMAT, enemyHand[0].Name));
+            Console.WriteLine(string.Format(GameConstants.ENEMY_ACTION_FORMAT, enemyHand[0].Name));
             enemyHand.RemoveAt(0);
 
             // Attack the Player hero
@@ -430,7 +416,7 @@ namespace TextBasedCardGame
         {
             if (enemyDeck.Cards.Count == 0)
             {
-                Console.WriteLine(string.Format(PLAYER_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
+                Console.WriteLine(string.Format(GameConstants.PLAYER_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
                 playerWins++;
             }
             else
@@ -482,7 +468,7 @@ namespace TextBasedCardGame
         {
             if (playerHeroHealth <= 0)
             {
-                Console.WriteLine(string.Format(ENEMY_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
+                Console.WriteLine(string.Format(GameConstants.ENEMY_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
                 enemyWins++;
             }
             else
