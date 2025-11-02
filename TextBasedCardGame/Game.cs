@@ -6,476 +6,323 @@ using System.Threading.Tasks;
 
 namespace TextBasedCardGame
 {
-    public enum GameTurnState
+    public enum EGameTurnState
     {
         Player = 0,
         Enemy = 1
     }
 
+    public struct Player
+    {
+        public Deck Deck { get; set; }
+        public List<Card> Hand { get; set; }
+        public int HeroHealth { get; set; }
+        public int HeroAttack { get; set; }
+        public int Wins { get; set; }
+    }
+
     public class Game
     {
+        private bool isRunning = true;
+        
         private int turnNumber = GameConstants.STARTING_TURN_NUMBER;
-        private int simGameNumber = 0;
-        private readonly Stack<Action> gameActions = new Stack<Action>();
+        public int TurnNumber
+        {
+            get {  return turnNumber; }
+        }
 
         // Player Info
-        private Deck playerDeck = new Deck();
-        private readonly List<Card> playerHand = new List<Card>();
-        private int playerHeroHealth = GameConstants.STARTING_HERO_HEALTH;
-        private int playerHeroAttack = GameConstants.STARTING_HERO_ATTACK;
-
-        private Action prePlayerTurnAction;
-        private Action playerTurnAction;
-        private Action postPlayerTurnAction;
-
-        private int playerWins = 0;
+        private Player player;
+        public Player Player
+        {
+            get { return player; }
+        }
 
         // Enemy Info
-        private Deck enemyDeck = new Deck();
-        private readonly List<Card> enemyHand = new List<Card>();
-        private int enemyHeroHealth = GameConstants.STARTING_HERO_HEALTH;
-        private int enemyHeroAttack = GameConstants.STARTING_HERO_ATTACK;
-
-        private Action preEnemyTurnAction;
-        private Action enemyTurnAction;
-        private Action postEnemyTurnAction;
-
-        private int enemyWins = 0;
+        private Player enemy;
+        public Player Enemy
+        {
+            get { return enemy; }
+        }
         
         public Game()
         {
-
+            
         }
 
         public void StartGame()
         {
-            prePlayerTurnAction -= HandlePrePlayerTurn;
-            prePlayerTurnAction += HandlePrePlayerTurn;
+            player.Deck = new Deck();
+            player.Hand = new List<Card>();
+            player.HeroHealth = GameConstants.STARTING_HERO_HEALTH;
+            player.HeroAttack = GameConstants.STARTING_HERO_ATTACK;
+            player.Wins = 0;
 
-            playerTurnAction -= DrawGameBoard;
-            playerTurnAction += DrawGameBoard;
-
-            playerTurnAction -= HandlePlayerTurn; 
-            playerTurnAction += HandlePlayerTurn;
-
-            postPlayerTurnAction -= HandlePostPlayerTurn;
-            postPlayerTurnAction += HandlePostPlayerTurn;
-
-            preEnemyTurnAction -= HandlePreEnemyTurn;
-            preEnemyTurnAction += HandlePreEnemyTurn;
-
-            enemyTurnAction -= DrawGameBoard;
-            enemyTurnAction += DrawGameBoard;
-
-            enemyTurnAction -= HandleEnemyTurn;
-            enemyTurnAction += HandleEnemyTurn;
-
-            postEnemyTurnAction -= HandlePostEnemyTurn;
-            postEnemyTurnAction += HandlePostEnemyTurn;
+            enemy.Deck = new Deck();
+            enemy.Hand = new List<Card>();
+            enemy.HeroHealth = GameConstants.STARTING_HERO_HEALTH;
+            enemy.HeroAttack = GameConstants.STARTING_HERO_ATTACK;
+            enemy.Wins = 0;
 
             Update();
         }
 
-        public void StartGameSim()
+        public void StopGame()
         {
-            prePlayerTurnAction -= HandlePrePlayerTurnSim;
-            prePlayerTurnAction += HandlePrePlayerTurnSim;
-
-            playerTurnAction -= HandlePlayerTurnSim;
-            playerTurnAction += HandlePlayerTurnSim;
-
-            postPlayerTurnAction -= HandlePostPlayerTurnSim;
-            postPlayerTurnAction += HandlePostPlayerTurnSim;
-
-            preEnemyTurnAction -= HandlePreEnemyTurnSim;
-            preEnemyTurnAction += HandlePreEnemyTurnSim;
-
-            enemyTurnAction -= HandleEnemyTurnSim;
-            enemyTurnAction += HandleEnemyTurnSim;
-
-            postEnemyTurnAction -= HandlePostEnemyTurnSim;
-            postEnemyTurnAction += HandlePostEnemyTurnSim;
-
-            for (simGameNumber = 0; simGameNumber < 100; simGameNumber++)
-            {
-                Update();
-                ResetGame();
-            }
-
-            // Print simulation information
-            Console.WriteLine("\nPlayer has won " + playerWins.ToString() + " games");
-            Console.WriteLine("Enemy has won " + enemyWins.ToString() + " games");
+            isRunning = false;
         }
 
         private void Update()
         {
-            GameTurnState gameTurnState = DetermineFirstTurn();
+            EGameTurnState gameTurnState = DetermineFirstTurn();
+            GameTurnState gameTurnStrategy = gameTurnState == EGameTurnState.Player ? new PrePlayerTurnState() : new PreEnemyTurnState();
+            GameTurnStateManager gameTurnStateManager = new GameTurnStateManager(gameTurnStrategy);
 
-            Action startingAction = gameTurnState == GameTurnState.Player ? prePlayerTurnAction : preEnemyTurnAction;
-
-            gameActions.Push(startingAction);
-
-            while (gameActions.Count > 0)
+            while (isRunning)
             {
-                Action currentAction = gameActions.Pop();
-                currentAction();
+                gameTurnStateManager.DoAction(this);
             }
         }
 
-        private void ResetGame()
-        {
-            turnNumber = GameConstants.STARTING_TURN_NUMBER;
-
-            playerDeck = new Deck();
-            playerHand.Clear();
-
-            playerHeroAttack = GameConstants.STARTING_HERO_ATTACK;
-            playerHeroHealth = GameConstants.STARTING_HERO_HEALTH;
-
-            enemyDeck = new Deck();
-            enemyHand.Clear();
-
-            enemyHeroAttack = GameConstants.STARTING_HERO_ATTACK;
-            enemyHeroHealth = GameConstants.STARTING_HERO_HEALTH;
-        }
-
-        private static GameTurnState DetermineFirstTurn()
+        private static EGameTurnState DetermineFirstTurn()
         {
             Random random = new Random();
             int playerNumber = random.Next(2);
-            return (GameTurnState)playerNumber;
+            return (EGameTurnState)playerNumber;
         }
 
-        private void DrawGameBoard()
+        public void IncrementPlayerHeroAttack()
         {
-            // Print Turn number
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
-            Console.WriteLine(string.Format(GameConstants.TURN_INFO_FORMAT, turnNumber));
-
-            // Print Enemy hero stats
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
-            Console.WriteLine("\tEnemy Hero:");
-            Console.WriteLine(string.Format(GameConstants.HERO_INFO_FORMAT, enemyHeroHealth, enemyHeroAttack) + "\n\n\n\n");
-            
-            // Print Player hero stats
-            Console.WriteLine("\tPlayer Hero:");
-            Console.WriteLine(string.Format(GameConstants.HERO_INFO_FORMAT, playerHeroHealth, playerHeroAttack));
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
+            player.HeroAttack++;
         }
 
-        #region Player Actions
-        private void HandlePrePlayerTurn()
+        public void DecrementPlayerHeroAttack()
         {
-            if (playerDeck.Cards.Count == 0)
-            {
-                DrawGameBoard();
-                Console.WriteLine("Sorry... You Lose...");
-                Console.WriteLine("Press any key to continue...");
-                Console.ReadKey(true);
-            }
-            else
-            {
-                gameActions.Push(playerTurnAction);
-            }
+            player.HeroAttack--;
         }
 
-        private void HandlePlayerTurn()
+        public void IncrementPlayerHeroHealth()
         {
-            // Draw Player hand
-            while (playerHand.Count < 3)
-            {
-                Card card = playerDeck.DrawCard();
-                playerHand.Add(card);
-            }
-
-            // Print Player hand
-            int i = 0;
-            foreach (Card card in playerHand)
-            {
-                Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, i + 1, card.Name));
-                i++;
-            }
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
-
-            // Get Player input
-            Console.WriteLine("What card do you want to play?");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
-
-            bool successfulInput = false;
-            while (!successfulInput)
-            {
-                try
-                {
-                    int chosenCardIndex = Convert.ToInt32(Console.ReadLine()) - 1;
-                    if (chosenCardIndex >= 0 && chosenCardIndex <= 2)
-                    {
-                        successfulInput = true;
-
-                        // Activate card's effect
-                        switch (playerHand[chosenCardIndex].EffectIndex)
-                        {
-                            case 0:
-                                playerHeroAttack++;
-                                break;
-                            case 1:
-                                playerHeroHealth++;
-                                break;
-                            case 2:
-                                enemyHeroAttack--;
-                                break;
-                            case 3:
-                                enemyHeroHealth--;
-                                break;
-                        }
-                        playerHand.RemoveAt(chosenCardIndex);
-
-                        // Attack the Enemy hero
-                        if (playerHeroAttack > 0)
-                        {
-                            enemyHeroHealth -= playerHeroAttack;
-                        }
-
-                        gameActions.Push(postPlayerTurnAction);
-
-                        // End of turn
-                        Console.WriteLine();
-                    }
-                    else
-                    {
-                        // Print message to tell the player they need input a number between 1 and 3
-                        // Then reset the player's turn
-                        Console.WriteLine("Need a number between 1 and 3");
-                    }
-                }
-                catch (Exception)
-                {
-                    // Print message to tell the player they need input a number and not a letter
-                    // Then reset the player's turn
-                    Console.WriteLine("Need a number between 1 and 3");
-                }
-            }
+            player.HeroHealth++;
         }
 
-        private void HandlePostPlayerTurn()
+        public void DecrementPlayerHeroHealth()
         {
-            if (enemyHeroHealth <= 0)
-            {
-                DrawGameBoard();
-                Console.WriteLine("Congratulations! You Win!");
-                Console.WriteLine("Press any key to continue...");
-                Console.ReadKey(true);
-            }
-            else
-            {
-                gameActions.Push(preEnemyTurnAction);
-            }
+            player.HeroHealth--;
         }
 
-        private void HandlePrePlayerTurnSim()
+        public void DecreasePlayerHeroHealth(int amount)
         {
-            if (playerDeck.Cards.Count == 0)
-            {
-                Console.WriteLine(string.Format(GameConstants.ENEMY_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
-                enemyWins++;
-            }
-            else
-            {
-                gameActions.Push(playerTurnAction);
-            }
+            player.HeroHealth -= amount;
         }
 
-        public void HandlePlayerTurnSim()
+        public void IncrementEnemyHeroAttack()
         {
-            // Draw Player hand
-            while (playerHand.Count < 3)
-            {
-                Card card = playerDeck.DrawCard();
-                playerHand.Add(card);
-            }
-
-            // Get card from Player hand
-            switch (playerHand[0].EffectIndex)
-            {
-                case 0:
-                    playerHeroAttack++;
-                    break;
-                case 1:
-                    playerHeroHealth++;
-                    break;
-                case 2:
-                    enemyHeroAttack--;
-                    break;
-                case 3:
-                    enemyHeroHealth--;
-                    break;
-            }
-            playerHand.RemoveAt(0);
-
-            // Attack the Player hero
-            if (playerHeroAttack > 0)
-            {
-                enemyHeroHealth -= playerHeroAttack;
-            }
-
-            gameActions.Push(postPlayerTurnAction);
+            enemy.HeroAttack++;
         }
 
-        private void HandlePostPlayerTurnSim()
+        public void DecrementEnemyHeroAttack()
         {
-            if (enemyHeroHealth <= 0)
-            {
-                Console.WriteLine(string.Format(GameConstants.PLAYER_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
-                playerWins++;
-            }
-            else
-            {
-                gameActions.Push(preEnemyTurnAction);
-            }
-        }
-        #endregion
-
-        #region Enemy Actions
-        private void HandlePreEnemyTurn()
-        {
-            if (enemyDeck.Cards.Count == 0)
-            {
-                DrawGameBoard();
-                Console.WriteLine("Congratulations! You Win!");
-                Console.WriteLine("Press any key to continue...");
-                Console.ReadKey(true);
-            }
-            else
-            {
-                gameActions.Push(enemyTurnAction);
-            }
+            enemy.HeroAttack--;
         }
 
-        private void HandleEnemyTurn()
+        public void IncrementEnemyHeroHealth()
         {
-            if (enemyDeck.Cards.Count == 0)
-            {
-                return;
-            }
+            enemy.HeroHealth++;
+        }
 
-            // Draw Enemy hand
-            while (enemyHand.Count < 3)
-            {
-                Card card = enemyDeck.DrawCard();
-                enemyHand.Add(card);
-            }
+        public void DecrementEnemyHeroHealth()
+        {
+            enemy.HeroHealth--;
+        }
 
-            // Get card from enemy hand
-            switch (enemyHand[0].EffectIndex)
-            {
-                case 0:
-                    enemyHeroAttack++;
-                    break;
-                case 1:
-                    enemyHeroHealth++;
-                    break;
-                case 2:
-                    playerHeroAttack--;
-                    break;
-                case 3:
-                    playerHeroHealth--;
-                    break;
-            }
-            Console.WriteLine(string.Format(GameConstants.ENEMY_ACTION_FORMAT, enemyHand[0].Name));
-            enemyHand.RemoveAt(0);
+        public void DecreaseEnemyHeroHealth(int amount)
+        {
+            enemy.HeroHealth -= amount;
+        }
 
-            // Attack the Player hero
-            if (enemyHeroAttack > 0)
-            {
-                playerHeroHealth -= enemyHeroAttack;
-            }
-
-            // End of turn
+        public void IncrementTurnNumber()
+        {
             turnNumber++;
-
-            gameActions.Push(postEnemyTurnAction);
-
-            Console.WriteLine();
         }
 
-        private void HandlePostEnemyTurn()
-        {
-            if (playerHeroHealth <= 0)
-            {
-                DrawGameBoard();
-                Console.WriteLine("Sorry... You Lose...");
-                Console.WriteLine("Press any key to continue...");
-                Console.ReadKey(true);
-            }
-            else
-            {
-                gameActions.Push(prePlayerTurnAction);
-            }
-        }
-        
-        private void HandlePreEnemyTurnSim()
-        {
-            if (enemyDeck.Cards.Count == 0)
-            {
-                Console.WriteLine(string.Format(GameConstants.PLAYER_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
-                playerWins++;
-            }
-            else
-            {
-                gameActions.Push(enemyTurnAction);
-            }
-        }
+        #region Simulation Logic
+        //private int simGameNumber = 0;
 
-        private void HandleEnemyTurnSim()
-        {
-            // Draw Enemy hand
-            while (enemyHand.Count < 3)
-            {
-                Card card = enemyDeck.DrawCard();
-                enemyHand.Add(card);
-            }
+        //public void StartGameSim()
+        //{
+        //    prePlayerTurnAction -= HandlePrePlayerTurnSim;
+        //    prePlayerTurnAction += HandlePrePlayerTurnSim;
 
-            // Get card from enemy hand
-            switch (enemyHand[0].EffectIndex)
-            {
-                case 0:
-                    enemyHeroAttack++;
-                    break;
-                case 1:
-                    enemyHeroHealth++;
-                    break;
-                case 2:
-                    playerHeroAttack--;
-                    break;
-                case 3:
-                    playerHeroHealth--;
-                    break;
-            }
-            enemyHand.RemoveAt(0);
+        //    playerTurnAction -= HandlePlayerTurnSim;
+        //    playerTurnAction += HandlePlayerTurnSim;
 
-            // Attack the Player hero
-            if (enemyHeroAttack > 0)
-            {
-                playerHeroHealth -= enemyHeroAttack;
-            }
+        //    postPlayerTurnAction -= HandlePostPlayerTurnSim;
+        //    postPlayerTurnAction += HandlePostPlayerTurnSim;
 
-            // End of turn
-            turnNumber++;
+        //    preEnemyTurnAction -= HandlePreEnemyTurnSim;
+        //    preEnemyTurnAction += HandlePreEnemyTurnSim;
 
-            gameActions.Push(postEnemyTurnAction);
-        }
+        //    enemyTurnAction -= HandleEnemyTurnSim;
+        //    enemyTurnAction += HandleEnemyTurnSim;
 
-        private void HandlePostEnemyTurnSim()
-        {
-            if (playerHeroHealth <= 0)
-            {
-                Console.WriteLine(string.Format(GameConstants.ENEMY_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
-                enemyWins++;
-            }
-            else
-            {
-                gameActions.Push(prePlayerTurnAction);
-            }
-        }
+        //    postEnemyTurnAction -= HandlePostEnemyTurnSim;
+        //    postEnemyTurnAction += HandlePostEnemyTurnSim;
+
+        //    for (simGameNumber = 0; simGameNumber < 100; simGameNumber++)
+        //    {
+        //        Update();
+        //        ResetGame();
+        //    }
+
+        //    // Print simulation information
+        //    Console.WriteLine("\nPlayer has won " + player.wins.ToString() + " games");
+        //    Console.WriteLine("Enemy has won " + enemy.wins.ToString() + " games");
+        //}
+
+        //private void ResetGame()
+        //{
+        //    turnNumber = GameConstants.STARTING_TURN_NUMBER;
+
+        //    player.deck = new Deck();
+        //    player.hand.Clear();
+
+        //    player.heroAttack = GameConstants.STARTING_HERO_ATTACK;
+        //    player.heroHealth = GameConstants.STARTING_HERO_HEALTH;
+
+        //    enemy.deck = new Deck();
+        //    enemy.hand.Clear();
+
+        //    enemy.heroAttack = GameConstants.STARTING_HERO_ATTACK;
+        //    enemy.heroHealth = GameConstants.STARTING_HERO_HEALTH;
+        //}
+
+        //private void HandlePrePlayerTurnSim()
+        //{
+        //    if (player.deck.Cards.Count == 0)
+        //    {
+        //        Console.WriteLine(string.Format(GameConstants.ENEMY_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
+        //        enemy.wins++;
+        //    }
+        //    else
+        //    {
+        //        gameActions.Push(playerTurnAction);
+        //    }
+        //}
+
+        //public void HandlePlayerTurnSim()
+        //{
+        //    // Draw Player hand
+        //    while (player.hand.Count < 3)
+        //    {
+        //        Card card = player.deck.DrawCard();
+        //        player.hand.Add(card);
+        //    }
+
+        //    // Get card from Player hand
+        //    switch (player.hand[0].EffectIndex)
+        //    {
+        //        case 0:
+        //            player.heroAttack++;
+        //            break;
+        //        case 1:
+        //            player.heroHealth++;
+        //            break;
+        //        case 2:
+        //            enemy.heroAttack--;
+        //            break;
+        //        case 3:
+        //            enemy.heroHealth--;
+        //            break;
+        //    }
+        //    player.hand.RemoveAt(0);
+
+        //    // Attack the Player hero
+        //    if (player.heroAttack > 0)
+        //    {
+        //        enemy.heroHealth -= player.heroAttack;
+        //    }
+
+        //    gameActions.Push(postPlayerTurnAction);
+        //}
+
+        //private void HandlePostPlayerTurnSim()
+        //{
+        //    if (enemy.heroHealth <= 0)
+        //    {
+        //        Console.WriteLine(string.Format(GameConstants.PLAYER_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
+        //        player.wins++;
+        //    }
+        //    else
+        //    {
+        //        gameActions.Push(preEnemyTurnAction);
+        //    }
+        //}
+
+        //private void HandlePreEnemyTurnSim()
+        //{
+        //    if (enemy.deck.Cards.Count == 0)
+        //    {
+        //        Console.WriteLine(string.Format(GameConstants.PLAYER_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
+        //        player.wins++;
+        //    }
+        //    else
+        //    {
+        //        gameActions.Push(enemyTurnAction);
+        //    }
+        //}
+
+        //private void HandleEnemyTurnSim()
+        //{
+        //    // Draw Enemy hand
+        //    while (enemy.hand.Count < 3)
+        //    {
+        //        Card card = enemy.deck.DrawCard();
+        //        enemy.hand.Add(card);
+        //    }
+
+        //    // Get card from enemy hand
+        //    switch (enemy.hand[0].EffectIndex)
+        //    {
+        //        case 0:
+        //            enemy.heroAttack++;
+        //            break;
+        //        case 1:
+        //            enemy.heroHealth++;
+        //            break;
+        //        case 2:
+        //            player.heroAttack--;
+        //            break;
+        //        case 3:
+        //            player.heroHealth--;
+        //            break;
+        //    }
+        //    enemy.hand.RemoveAt(0);
+
+        //    // Attack the Player hero
+        //    if (enemy.heroAttack > 0)
+        //    {
+        //        player.heroHealth -= enemy.heroAttack;
+        //    }
+
+        //    // End of turn
+        //    turnNumber++;
+
+        //    gameActions.Push(postEnemyTurnAction);
+        //}
+
+        //private void HandlePostEnemyTurnSim()
+        //{
+        //    if (player.heroHealth <= 0)
+        //    {
+        //        Console.WriteLine(string.Format(GameConstants.ENEMY_WINS_SIM_FORMAT, (simGameNumber + 1).ToString(), turnNumber.ToString()));
+        //        enemy.wins++;
+        //    }
+        //    else
+        //    {
+        //        gameActions.Push(prePlayerTurnAction);
+        //    }
+        //}
         #endregion
     }
 }
