@@ -12,10 +12,19 @@ namespace TextBasedCardGame
         {
             if (game.Enemy.HeroHealth <= 0)
             {
-                GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
-                Console.WriteLine("Congratulations! You Win!");
-                Console.WriteLine("Press any key to continue...");
-                Console.ReadKey(true);
+                if (game.IsSim)
+                {
+                    Console.WriteLine(string.Format(GameConstants.PLAYER_WINS_SIM_FORMAT, (game.SimGameNumber + 1).ToString(), game.TurnNumber.ToString()));
+                    game.IncrementPlayerWinNumber();
+                }
+                else
+                {
+                    GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
+                    Console.WriteLine("Congratulations! You Win!");
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey(true);
+                }
+
                 game.StopGame();
             }
             else

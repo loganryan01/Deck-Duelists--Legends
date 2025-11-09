@@ -11,8 +11,20 @@ namespace TextBasedCardGame
     {
         public override void DoAction(Game game)
         {
+            if (game.IsSim)
+            {
+                DoSimAction(game);
+            }
+            else
+            {
+                DoNormalAction(game);
+            }
+        }
+
+        private void DoNormalAction(Game game)
+        {
             GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
-            
+
             // Draw Player hand
             while (game.Player.Hand.Count < 3)
             {
@@ -87,6 +99,45 @@ namespace TextBasedCardGame
                     Console.WriteLine("Need a number between 1 and 3");
                 }
             }
+        }
+
+        private void DoSimAction(Game game)
+        {
+            // Draw Player hand
+            while (game.Player.Hand.Count < 3)
+            {
+                Card card = game.Player.Deck.DrawCard();
+                game.Player.Hand.Add(card);
+            }
+
+            // Get card from Player hand
+            switch (game.Player.Hand[0].EffectIndex)
+            {
+                case 0:
+                    game.IncrementPlayerHeroAttack();
+                    break;
+                case 1:
+                    game.IncrementPlayerHeroHealth();
+                    break;
+                case 2:
+                    game.DecrementEnemyHeroAttack();
+                    break;
+                case 3:
+                    game.DecrementEnemyHeroHealth();
+                    break;
+            }
+            game.Player.Hand.RemoveAt(0);
+
+            // Attack the Player hero
+            if (game.Player.HeroAttack > 0)
+            {
+                game.DecreaseEnemyHeroHealth(game.Player.HeroAttack);
+            }
+
+            gameTurnStateManager.TransitionTo(new PostPlayerTurnState());
+
+            // End of turn
+            game.IncrementTurnNumber();
         }
     }
 }
