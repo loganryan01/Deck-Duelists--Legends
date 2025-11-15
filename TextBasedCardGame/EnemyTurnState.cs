@@ -24,16 +24,16 @@ namespace TextBasedCardGame
             switch (game.Enemy.Hand[0].EffectIndex)
             {
                 case 0:
-                    game.IncrementEnemyHeroAttack();
+                    game.Enemy.IncrementHeroAttack();
                     break;
                 case 1:
-                    game.IncrementEnemyHeroHealth();
+                    game.Enemy.IncrementHeroHealth();
                     break;
                 case 2:
-                    game.DecrementPlayerHeroAttack();
+                    game.Player.DecrementHeroAttack();
                     break;
                 case 3:
-                    game.DecrementPlayerHeroHealth();
+                    game.Player.DecrementHeroHealth();
                     break;
             }
             if (!game.IsSim)
@@ -43,7 +43,7 @@ namespace TextBasedCardGame
             // Attack the Player hero
             if (game.Enemy.HeroAttack > 0)
             {
-                game.DecreasePlayerHeroHealth(game.Enemy.HeroAttack);
+                game.Player.DecreaseHeroHealth(game.Enemy.HeroAttack);
             }
 
             // End of turn

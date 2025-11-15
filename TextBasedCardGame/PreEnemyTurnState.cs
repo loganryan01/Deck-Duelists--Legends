@@ -15,7 +15,7 @@ namespace TextBasedCardGame
                 if (game.IsSim)
                 {
                     Console.WriteLine(string.Format(GameConstants.PLAYER_WINS_SIM_FORMAT, (game.SimGameNumber + 1).ToString(), game.TurnNumber.ToString()));
-                    game.IncrementPlayerWinNumber();
+                    game.Player.IncrementWinNumber();
                 }
                 else
                 {

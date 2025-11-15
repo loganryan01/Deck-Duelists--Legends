@@ -59,16 +59,16 @@ namespace TextBasedCardGame
                         switch (game.Player.Hand[chosenCardIndex].EffectIndex)
                         {
                             case 0:
-                                game.IncrementPlayerHeroAttack();
+                                game.Player.IncrementHeroAttack();
                                 break;
                             case 1:
-                                game.IncrementPlayerHeroHealth();
+                                game.Player.IncrementHeroHealth();
                                 break;
                             case 2:
-                                game.DecrementEnemyHeroAttack();
+                                game.Enemy.DecrementHeroAttack();
                                 break;
                             case 3:
-                                game.DecrementEnemyHeroHealth();
+                                game.Enemy.DecrementHeroHealth();
                                 break;
                         }
                         game.Player.Hand.RemoveAt(chosenCardIndex);
@@ -76,7 +76,7 @@ namespace TextBasedCardGame
                         // Attack the Enemy hero
                         if (game.Player.HeroAttack > 0)
                         {
-                            game.DecreaseEnemyHeroHealth(game.Player.HeroAttack);
+                            game.Enemy.DecreaseHeroHealth(game.Player.HeroAttack);
                         }
 
                         gameTurnStateManager.TransitionTo(new PostPlayerTurnState());
@@ -114,16 +114,16 @@ namespace TextBasedCardGame
             switch (game.Player.Hand[0].EffectIndex)
             {
                 case 0:
-                    game.IncrementPlayerHeroAttack();
+                    game.Player.IncrementHeroAttack();
                     break;
                 case 1:
-                    game.IncrementPlayerHeroHealth();
+                    game.Player.IncrementHeroHealth();
                     break;
                 case 2:
-                    game.DecrementEnemyHeroAttack();
+                    game.Enemy.DecrementHeroAttack();
                     break;
                 case 3:
-                    game.DecrementEnemyHeroHealth();
+                    game.Enemy.DecrementHeroHealth();
                     break;
             }
             game.Player.Hand.RemoveAt(0);
@@ -131,7 +131,7 @@ namespace TextBasedCardGame
             // Attack the Player hero
             if (game.Player.HeroAttack > 0)
             {
-                game.DecreaseEnemyHeroHealth(game.Player.HeroAttack);
+                game.Enemy.DecreaseHeroHealth(game.Player.HeroAttack);
             }
 
             gameTurnStateManager.TransitionTo(new PostPlayerTurnState());

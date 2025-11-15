@@ -12,15 +12,6 @@ namespace TextBasedCardGame
         Enemy = 1
     }
 
-    public struct Player
-    {
-        public Deck Deck { get; set; }
-        public List<Card> Hand { get; set; }
-        public int HeroHealth { get; set; }
-        public int HeroAttack { get; set; }
-        public int Wins { get; set; }
-    }
-
     public class Game
     {
         private bool isRunning = true;
@@ -46,14 +37,14 @@ namespace TextBasedCardGame
         }
 
         // Player Info
-        private Player player;
+        private readonly Player player;
         public Player Player
         {
             get { return player; }
         }
 
         // Enemy Info
-        private Player enemy;
+        private readonly Player enemy;
         public Player Enemy
         {
             get { return enemy; }
@@ -61,17 +52,8 @@ namespace TextBasedCardGame
         
         public Game()
         {
-            player.Deck = new Deck();
-            player.Hand = new List<Card>();
-            player.HeroHealth = GameConstants.STARTING_HERO_HEALTH;
-            player.HeroAttack = GameConstants.STARTING_HERO_ATTACK;
-            player.Wins = 0;
-
-            enemy.Deck = new Deck();
-            enemy.Hand = new List<Card>();
-            enemy.HeroHealth = GameConstants.STARTING_HERO_HEALTH;
-            enemy.HeroAttack = GameConstants.STARTING_HERO_ATTACK;
-            enemy.Wins = 0;
+            player = new Player();
+            enemy = new Player();
         }
 
         public void StartGame()
@@ -99,17 +81,8 @@ namespace TextBasedCardGame
         {
             turnNumber = GameConstants.STARTING_TURN_NUMBER;
 
-            player.Deck = new Deck();
-            player.Hand.Clear();
-
-            player.HeroAttack = GameConstants.STARTING_HERO_ATTACK;
-            player.HeroHealth = GameConstants.STARTING_HERO_HEALTH;
-
-            enemy.Deck = new Deck();
-            enemy.Hand.Clear();
-
-            enemy.HeroAttack = GameConstants.STARTING_HERO_ATTACK;
-            enemy.HeroHealth = GameConstants.STARTING_HERO_HEALTH;
+            player.Reset();
+            enemy.Reset();
         }
 
         public void StopGame()
@@ -136,69 +109,9 @@ namespace TextBasedCardGame
             return (EGameTurnState)playerNumber;
         }
 
-        public void IncrementPlayerHeroAttack()
-        {
-            player.HeroAttack++;
-        }
-
-        public void DecrementPlayerHeroAttack()
-        {
-            player.HeroAttack--;
-        }
-
-        public void IncrementPlayerHeroHealth()
-        {
-            player.HeroHealth++;
-        }
-
-        public void DecrementPlayerHeroHealth()
-        {
-            player.HeroHealth--;
-        }
-
-        public void DecreasePlayerHeroHealth(int amount)
-        {
-            player.HeroHealth -= amount;
-        }
-
-        public void IncrementEnemyHeroAttack()
-        {
-            enemy.HeroAttack++;
-        }
-
-        public void DecrementEnemyHeroAttack()
-        {
-            enemy.HeroAttack--;
-        }
-
-        public void IncrementEnemyHeroHealth()
-        {
-            enemy.HeroHealth++;
-        }
-
-        public void DecrementEnemyHeroHealth()
-        {
-            enemy.HeroHealth--;
-        }
-
-        public void DecreaseEnemyHeroHealth(int amount)
-        {
-            enemy.HeroHealth -= amount;
-        }
-
         public void IncrementTurnNumber()
         {
             turnNumber++;
-        }
-
-        public void IncrementPlayerWinNumber()
-        {
-            player.Wins++;
-        }
-
-        public void IncrementEnemyWinNumber()
-        {
-            enemy.Wins++;
         }
     }
 }
