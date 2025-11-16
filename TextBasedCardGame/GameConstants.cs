@@ -1,13 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TextBasedCardGame
 {
+    public enum CardEffect
+    {
+        IncreaseHeroAttack,
+        IncreaseHeroHealth,
+        DecreaseEnemyAttack,
+        DecreaseEnemyHealth,
+    }
+    
     public static class GameConstants
     {
+        public static readonly IImmutableList<int> AI_OFFENSIVE_PRIORITY_LIST = ImmutableList.Create((int)CardEffect.IncreaseHeroAttack, (int)CardEffect.DecreaseEnemyHealth, (int)CardEffect.DecreaseEnemyAttack, (int)CardEffect.IncreaseHeroHealth);
+        public static readonly IImmutableList<int> AI_DEFENSIVE_PRIORITY_LIST = ImmutableList.Create((int)CardEffect.IncreaseHeroHealth, (int)CardEffect.DecreaseEnemyAttack, (int)CardEffect.IncreaseHeroAttack, (int)CardEffect.DecreaseEnemyHealth);
+
         public const int STARTING_TURN_NUMBER = 1;
         public const int STARTING_HERO_HEALTH = 20;
         public const int STARTING_HERO_ATTACK = 1;

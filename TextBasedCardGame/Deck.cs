@@ -31,19 +31,19 @@ namespace TextBasedCardGame
             {
                 if (i < 13)
                 {
-                    card = new Card("+1 Hero Attack", 0);
+                    card = new Card("+1 Hero Attack", (int)CardEffect.IncreaseHeroAttack);
                 }
                 else if (i < 26)
                 {
-                    card = new Card("+1 Hero Health", 1);
+                    card = new Card("+1 Hero Health", (int)CardEffect.IncreaseHeroHealth);
                 }
                 else if (i < 39)
                 {
-                    card = new Card("-1 Enemy Attack", 2);
+                    card = new Card("-1 Enemy Attack", (int)CardEffect.DecreaseEnemyAttack);
                 }
                 else if (i < 52)
                 {
-                    card = new Card("-1 Enemy Health", 3);
+                    card = new Card("-1 Enemy Health", (int)CardEffect.DecreaseEnemyHealth);
                 }
 
                 if (card != null)

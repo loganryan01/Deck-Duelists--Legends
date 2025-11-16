@@ -22,7 +22,7 @@ namespace TextBasedCardGame
 
             // Get card from enemy hand
             int chosenCardIndex = -1;
-            List<int> priorityList = game.Enemy.HeroHealth > 5 ? new List<int>() { 0, 3, 2, 1 } : new List<int>() { 1, 2, 0, 3 };
+            var priorityList = game.Enemy.HeroHealth > 5 ? GameConstants.AI_OFFENSIVE_PRIORITY_LIST : GameConstants.AI_DEFENSIVE_PRIORITY_LIST;
             for (int i = 0; i < 4; i++)
             {
                 chosenCardIndex = game.Enemy.Hand.FindIndex(x => x.EffectIndex == priorityList[i]);
@@ -34,16 +34,16 @@ namespace TextBasedCardGame
 
             switch (game.Enemy.Hand[chosenCardIndex].EffectIndex)
             {
-                case 0:
+                case (int)CardEffect.IncreaseHeroAttack:
                     game.Enemy.IncrementHeroAttack();
                     break;
-                case 1:
+                case (int)CardEffect.IncreaseHeroHealth:
                     game.Enemy.IncrementHeroHealth();
                     break;
-                case 2:
+                case (int)CardEffect.DecreaseEnemyAttack:
                     game.Player.DecrementHeroAttack();
                     break;
-                case 3:
+                case (int)CardEffect.DecreaseEnemyHealth:
                     game.Player.DecrementHeroHealth();
                     break;
             }
