@@ -25,5 +25,10 @@ namespace TextBasedCardGame
             this.name = name;
             this.effectIndex = effectIndex;
         }
+
+        public override string ToString()
+        {
+            return name;
+        }
     }
 }

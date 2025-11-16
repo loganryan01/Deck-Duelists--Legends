@@ -21,7 +21,18 @@ namespace TextBasedCardGame
             }
 
             // Get card from enemy hand
-            switch (game.Enemy.Hand[0].EffectIndex)
+            int chosenCardIndex = -1;
+            List<int> priorityList = game.Enemy.HeroHealth > 5 ? new List<int>() { 0, 3, 2, 1 } : new List<int>() { 1, 2, 0, 3 };
+            for (int i = 0; i < 4; i++)
+            {
+                chosenCardIndex = game.Enemy.Hand.FindIndex(x => x.EffectIndex == priorityList[i]);
+                if (chosenCardIndex != -1)
+                {
+                    break;
+                }
+            }
+
+            switch (game.Enemy.Hand[chosenCardIndex].EffectIndex)
             {
                 case 0:
                     game.Enemy.IncrementHeroAttack();
@@ -37,8 +48,8 @@ namespace TextBasedCardGame
                     break;
             }
             if (!game.IsSim)
-                Console.WriteLine(string.Format(GameConstants.ENEMY_ACTION_FORMAT, game.Enemy.Hand[0].Name));
-            game.Enemy.Hand.RemoveAt(0);
+                Console.WriteLine(string.Format(GameConstants.ENEMY_ACTION_FORMAT, game.Enemy.Hand[chosenCardIndex].Name));
+            game.Enemy.Hand.RemoveAt(chosenCardIndex);
 
             // Attack the Player hero
             if (game.Enemy.HeroAttack > 0)
