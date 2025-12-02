@@ -58,7 +58,12 @@ namespace TextBasedCardGame
 
         public void StartGame()
         {
-            Update();
+            GameStateManager gameStateManager = new GameStateManager(new GameMenuState());
+
+            while (isRunning)
+            {
+                gameStateManager.DoAction(this);
+            }
         }
 
         public void StartSim()
