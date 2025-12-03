@@ -11,8 +11,7 @@ namespace TextBasedCardGame
     {
         public override void DoAction(Game game)
         {
-            if (!game.IsSim)
-                GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
+            GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
 
             while (game.Enemy.Hand.Count < 3)
             {
@@ -47,8 +46,7 @@ namespace TextBasedCardGame
                     game.Player.DecrementHeroHealth();
                     break;
             }
-            if (!game.IsSim)
-                Console.WriteLine(string.Format(GameConstants.ENEMY_ACTION_FORMAT, game.Enemy.Hand[chosenCardIndex].Name));
+            Console.WriteLine(string.Format(GameConstants.ENEMY_ACTION_FORMAT, game.Enemy.Hand[chosenCardIndex].Name));
             game.Enemy.Hand.RemoveAt(chosenCardIndex);
 
             // Attack the Player hero
@@ -62,8 +60,7 @@ namespace TextBasedCardGame
 
             gameTurnStateManager.TransitionTo(new PostEnemyTurnState());
 
-            if (!game.IsSim)
-                Console.WriteLine();
+            Console.WriteLine();
         }
     }
 }

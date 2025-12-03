@@ -29,7 +29,5 @@ namespace TextBasedCardGame
         public const string HERO_INFO_FORMAT = "Health = {0}\tAttack = {1}";
         public const string TURN_INFO_FORMAT = "Turn: {0}";
         public const string ENEMY_ACTION_FORMAT = "Enemy has played '{0}'";
-        public const string PLAYER_WINS_SIM_FORMAT = "Player wins Game {0} by Turn {1}";
-        public const string ENEMY_WINS_SIM_FORMAT = "Enemy wins Game {0} by Turn {1}";
     }
 }

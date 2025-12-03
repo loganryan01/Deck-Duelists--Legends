@@ -12,18 +12,10 @@ namespace TextBasedCardGame
         {
             if (game.Player.Deck.Cards.Count == 0)
             {
-                if (game.IsSim)
-                {
-                    Console.WriteLine(string.Format(GameConstants.ENEMY_WINS_SIM_FORMAT, (game.SimGameNumber + 1).ToString(), game.TurnNumber.ToString()));
-                    game.Enemy.IncrementWinNumber();
-                }
-                else
-                {
-                    GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
-                    Console.WriteLine("Sorry... You Lose...");
-                    Console.WriteLine("Press any key to continue...");
-                    Console.ReadKey(true);
-                }
+                GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
+                Console.WriteLine("Sorry... You Lose...");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey(true);
 
                 game.StopGame();
             }

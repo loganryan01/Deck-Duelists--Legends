@@ -20,15 +20,6 @@ namespace TextBasedCardGame
             get { return isRunning; }
         }
 
-        private bool isSim = false;
-        public bool IsSim
-        {
-            get
-            {
-                return isSim;
-            }
-        }
-
         private bool isPlaying = true;
         public bool IsPlaying
         {
@@ -39,12 +30,6 @@ namespace TextBasedCardGame
         public int TurnNumber
         {
             get {  return turnNumber; }
-        }
-
-        private int simGameNumber = 0;
-        public int SimGameNumber
-        {
-            get { return simGameNumber; }
         }
 
         // Player Info
@@ -77,22 +62,6 @@ namespace TextBasedCardGame
             }
         }
 
-        public void StartSim()
-        {
-            isSim = true;
-
-            for (simGameNumber = 0; simGameNumber < 100; simGameNumber++) 
-            {
-                isRunning = true;
-                Update();
-                ResetGame();
-            }
-
-            // Print simulation information
-            Console.WriteLine("\nPlayer has won " + player.Wins.ToString() + " games");
-            Console.WriteLine("Enemy has won " + enemy.Wins.ToString() + " games");
-        }
-
         public void ResetGame()
         {
             turnNumber = GameConstants.STARTING_TURN_NUMBER;
@@ -110,25 +79,6 @@ namespace TextBasedCardGame
         public void StopGame()
         {
             isPlaying = false;
-        }
-
-        private void Update()
-        {
-            EGameTurnState gameTurnState = DetermineFirstTurn();
-            GameTurnState gameTurnStrategy = gameTurnState == EGameTurnState.Player ? new PrePlayerTurnState() : new PreEnemyTurnState();
-            GameTurnStateManager gameTurnStateManager = new GameTurnStateManager(gameTurnStrategy);
-
-            while (isRunning)
-            {
-                gameTurnStateManager.DoAction(this);
-            }
-        }
-
-        private static EGameTurnState DetermineFirstTurn()
-        {
-            Random random = new Random();
-            int playerNumber = random.Next(2);
-            return (EGameTurnState)playerNumber;
         }
 
         public void IncrementTurnNumber()

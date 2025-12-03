@@ -11,18 +11,6 @@ namespace TextBasedCardGame
     {
         public override void DoAction(Game game)
         {
-            if (game.IsSim)
-            {
-                DoSimAction(game);
-            }
-            else
-            {
-                DoNormalAction(game);
-            }
-        }
-
-        private void DoNormalAction(Game game)
-        {
             GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
 
             // Draw Player hand
@@ -99,56 +87,6 @@ namespace TextBasedCardGame
                     Console.WriteLine("Need a number between 1 and 3");
                 }
             }
-        }
-
-        private void DoSimAction(Game game)
-        {
-            // Draw Player hand
-            while (game.Player.Hand.Count < 3)
-            {
-                Card card = game.Player.Deck.DrawCard();
-                game.Player.Hand.Add(card);
-            }
-
-            // Get card from Player hand
-            int chosenCardIndex = -1;
-            var priorityList = game.Player.HeroHealth > 5 ? GameConstants.AI_OFFENSIVE_PRIORITY_LIST : GameConstants.AI_DEFENSIVE_PRIORITY_LIST;
-            for (int i = 0; i < 4; i++)
-            {
-                chosenCardIndex = game.Player.Hand.FindIndex(x => x.EffectIndex == priorityList[i]);
-                if (chosenCardIndex != -1)
-                {
-                    break;
-                }
-            }
-
-            switch (game.Player.Hand[chosenCardIndex].EffectIndex)
-            {
-                case (int)CardEffect.IncreaseHeroAttack:
-                    game.Player.IncrementHeroAttack();
-                    break;
-                case (int)CardEffect.IncreaseHeroHealth:
-                    game.Player.IncrementHeroHealth();
-                    break;
-                case (int)CardEffect.DecreaseEnemyAttack:
-                    game.Enemy.DecrementHeroAttack();
-                    break;
-                case (int)CardEffect.DecreaseEnemyHealth:
-                    game.Enemy.DecrementHeroHealth();
-                    break;
-            }
-            game.Player.Hand.RemoveAt(chosenCardIndex);
-
-            // Attack the Player hero
-            if (game.Player.HeroAttack > 0)
-            {
-                game.Enemy.DecreaseHeroHealth(game.Player.HeroAttack);
-            }
-
-            gameTurnStateManager.TransitionTo(new PostPlayerTurnState());
-
-            // End of turn
-            game.IncrementTurnNumber();
         }
     }
 }
