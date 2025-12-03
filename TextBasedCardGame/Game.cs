@@ -15,6 +15,11 @@ namespace TextBasedCardGame
     public class Game
     {
         private bool isRunning = true;
+        public bool IsRunning
+        {
+            get { return isRunning; }
+        }
+
         private bool isSim = false;
         public bool IsSim
         {
@@ -22,6 +27,12 @@ namespace TextBasedCardGame
             {
                 return isSim;
             }
+        }
+
+        private bool isPlaying = true;
+        public bool IsPlaying
+        {
+            get { return isPlaying; }
         }
         
         private int turnNumber = GameConstants.STARTING_TURN_NUMBER;
@@ -82,17 +93,23 @@ namespace TextBasedCardGame
             Console.WriteLine("Enemy has won " + enemy.Wins.ToString() + " games");
         }
 
-        private void ResetGame()
+        public void ResetGame()
         {
             turnNumber = GameConstants.STARTING_TURN_NUMBER;
+            isPlaying = true;
 
             player.Reset();
             enemy.Reset();
         }
 
-        public void StopGame()
+        public void CloseGame()
         {
             isRunning = false;
+        }
+
+        public void StopGame()
+        {
+            isPlaying = false;
         }
 
         private void Update()

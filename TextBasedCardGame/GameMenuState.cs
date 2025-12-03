@@ -8,10 +8,10 @@ namespace TextBasedCardGame
 {
     public class GameMenuState : GameState
     {
-        private string[] TITLE = { " _____        _       ___                  _      ___             _      ___                ",
-                                   "|_   _|____ _| |_ ___| _ ) __ _ ___ ___ __| |___ / __|__ _ _ _ __| |___ / __|__ _ _ __  ___ ",
-                                   "  | |/ -_) \\ /  _|___| _ \\/ _` (_-</ -_) _` |___| (__/ _` | '_/ _` |___| (_ / _` | '  \\/ -_)",
-                                   "  |_|\\___/_\\_\\\\__|   |___/\\__,_/__/\\___\\__,_|    \\___\\__,_|_| \\__,_|    \\___\\__,_|_|_|_\\___|"};
+        private readonly string[] TITLE = { " _____        _       ___                  _      ___             _      ___                ",
+                                            "|_   _|____ _| |_ ___| _ ) __ _ ___ ___ __| |___ / __|__ _ _ _ __| |___ / __|__ _ _ __  ___ ",
+                                            "  | |/ -_) \\ /  _|___| _ \\/ _` (_-</ -_) _` |___| (__/ _` | '_/ _` |___| (_ / _` | '  \\/ -_)",
+                                            "  |_|\\___/_\\_\\\\__|   |___/\\__,_/__/\\___\\__,_|    \\___\\__,_|_| \\__,_|    \\___\\__,_|_|_|_\\___|"};
         
         public override void DoAction(Game game)
         {
@@ -20,7 +20,8 @@ namespace TextBasedCardGame
                 Console.WriteLine(s);
             }
             Console.WriteLine();
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "1", "Exit"));
+            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "1", "Play"));
+            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "2", "Exit"));
 
             bool successfulInput = false;
             while (!successfulInput)
@@ -33,7 +34,14 @@ namespace TextBasedCardGame
                     {
                         successfulInput = true;
 
-                        game.StopGame();
+                        Console.Clear();
+                        gameStateManager.TransitionTo(new GamePlayState());
+                    }
+                    else if (playerInput == 2)
+                    {
+                        successfulInput = true;
+
+                        game.CloseGame();
                     }
                     else
                     {
