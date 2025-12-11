@@ -12,6 +12,7 @@ namespace TextBasedCardGame
         public override void DoAction(Game game)
         {
             GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
+            GameUtils.DrawLog(game.Log);
 
             // Draw Player hand
             while (game.Player.Hand.Count < 3)
@@ -59,6 +60,8 @@ namespace TextBasedCardGame
                                 game.Enemy.DecrementHeroHealth();
                                 break;
                         }
+                        game.AddToLog("Player", game.Player.Hand[chosenCardIndex].Name);
+
                         game.Player.Hand.RemoveAt(chosenCardIndex);
 
                         // Attack the Enemy hero

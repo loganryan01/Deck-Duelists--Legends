@@ -24,10 +24,11 @@ namespace TextBasedCardGame
         public const int STARTING_HERO_HEALTH = 20;
         public const int STARTING_HERO_ATTACK = 1;
 
-        public const string SPLITTER_TEXT = "==============================";
+        public const string SPLITTER_TEXT = "==================================";
         public const string CARD_PRINT_FORMAT = "[{0}] {1}";
-        public const string HERO_INFO_FORMAT = "Health = {0}\tAttack = {1}";
+        public const string HERO_INFO_FORMAT = "Health = {0}\t    Attack = {1}";
         public const string TURN_INFO_FORMAT = "Turn: {0}";
         public const string ENEMY_ACTION_FORMAT = "Enemy has played '{0}'";
+        public const string LOG_FORMAT = "{0} used \"{1}\"";
     }
 }

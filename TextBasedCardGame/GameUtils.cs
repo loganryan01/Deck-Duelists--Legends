@@ -20,13 +20,51 @@ namespace TextBasedCardGame
 
             // Print Enemy hero stats
             Console.WriteLine(GameConstants.SPLITTER_TEXT);
-            Console.WriteLine("\tEnemy Hero:");
+            Console.WriteLine("\t   Enemy Hero:");
             Console.WriteLine(string.Format(GameConstants.HERO_INFO_FORMAT, enemy.HeroHealth, enemy.HeroAttack) + "\n\n\n\n");
 
             // Print Player hero stats
-            Console.WriteLine("\tPlayer Hero:");
+            Console.WriteLine("\t   Player Hero:");
             Console.WriteLine(string.Format(GameConstants.HERO_INFO_FORMAT, player.HeroHealth, player.HeroAttack));
             Console.WriteLine(GameConstants.SPLITTER_TEXT);
+
+            // Set cursor position underneath game board when done
+            Console.SetCursorPosition(0, 12);
+        }
+
+        public static void DrawLog(List<string> log)
+        {
+            // Print walls for box
+            for (int i = 0; i < 18; i++)
+            {
+                WriteAt("|", 34, i);
+            }
+
+            for (int i = 0; i < 18; i++)
+            {
+                WriteAt("|", 69, i);
+            }
+
+            // Print log title
+            WriteAt(GameConstants.SPLITTER_TEXT, 35, 0);
+            WriteAt("Log", 50, 1);
+
+            // Print the log itself
+            WriteAt(GameConstants.SPLITTER_TEXT, 35, 2);
+            for (int i = 0; i < log.Count; i++)
+            {
+                WriteAt(log[i], 35, i + 3);
+            }
+            WriteAt(GameConstants.SPLITTER_TEXT, 35, 17);
+
+            // Set cursor position underneath game board when done
+            Console.SetCursorPosition(0, 12);
+        }
+
+        public static void WriteAt(string s, int x, int y)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.Write(s);
         }
     }
 }

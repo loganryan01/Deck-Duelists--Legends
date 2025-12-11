@@ -45,11 +45,19 @@ namespace TextBasedCardGame
         {
             get { return enemy; }
         }
+
+        private readonly List<string> log;
+        public List<string> Log
+        { 
+            get { return log; } 
+        }
         
         public Game()
         {
             player = new Player();
             enemy = new Player();
+
+            log = new List<string>();
         }
 
         public void StartGame()
@@ -69,6 +77,8 @@ namespace TextBasedCardGame
 
             player.Reset();
             enemy.Reset();
+
+            log.Clear();
         }
 
         public void CloseGame()
@@ -84,6 +94,18 @@ namespace TextBasedCardGame
         public void IncrementTurnNumber()
         {
             turnNumber++;
+        }
+
+        public void AddToLog(string playerName, string cardName)
+        {
+            // Remove the first message in the log if it exceeds the maximum size
+            if (log.Count > 13)
+            {
+                log.RemoveAt(0);
+            }
+            
+            string message = string.Format(GameConstants.LOG_FORMAT, playerName, cardName);
+            log.Add(message);
         }
     }
 }
