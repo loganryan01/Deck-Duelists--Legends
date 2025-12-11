@@ -55,6 +55,9 @@ namespace TextBasedCardGame
                 game.Player.DecreaseHeroHealth(game.Enemy.HeroAttack);
             }
 
+            // Wait 3 seconds before doing end turn checks
+            Thread.Sleep(3000);
+
             // End of turn
             game.IncrementTurnNumber();
 

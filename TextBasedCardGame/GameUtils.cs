@@ -11,6 +11,9 @@ namespace TextBasedCardGame
     {
         public static void DrawGameBoard(Player player, Player enemy, int turnNumber)
         {
+            // Clear console
+            Console.Clear();
+            
             // Print Turn number
             Console.WriteLine(GameConstants.SPLITTER_TEXT);
             Console.WriteLine(string.Format(GameConstants.TURN_INFO_FORMAT, turnNumber));
