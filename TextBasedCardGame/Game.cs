@@ -110,7 +110,7 @@ namespace TextBasedCardGame
                 log.RemoveAt(0);
             }
             
-            string message = string.Format(GameConstants.LOG_FORMAT, playerName, cardName);
+            string message = string.Format(GameConstants.LOG_FORMAT, turnNumber.ToString(), playerName, cardName);
             log.Add(message);
         }
 
