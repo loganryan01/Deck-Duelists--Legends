@@ -12,7 +12,10 @@ namespace TextBasedCardGame
         public override void DoAction(Game game)
         {
             GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
-            GameUtils.DrawLog(game.Log);
+            if (game.IsLogEnabled)
+            {
+                GameUtils.DrawLog(game.Log);
+            }
 
             // Draw Player hand
             while (game.Player.Hand.Count < 3)

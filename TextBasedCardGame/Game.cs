@@ -25,6 +25,12 @@ namespace TextBasedCardGame
         {
             get { return isPlaying; }
         }
+
+        private bool isLogEnabled = true;
+        public bool IsLogEnabled
+        { 
+            get { return isLogEnabled; } 
+        }
         
         private int turnNumber = GameConstants.STARTING_TURN_NUMBER;
         public int TurnNumber
@@ -106,6 +112,11 @@ namespace TextBasedCardGame
             
             string message = string.Format(GameConstants.LOG_FORMAT, playerName, cardName);
             log.Add(message);
+        }
+
+        public void EnableLog(bool enable)
+        {
+            isLogEnabled = enable;
         }
     }
 }

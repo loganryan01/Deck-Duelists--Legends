@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TextBasedCardGame
 {
-    public class GameMenuState : GameState
+    public class GameSettingsState : GameState
     {
         public override void DoAction(Game game)
         {
@@ -15,9 +15,8 @@ namespace TextBasedCardGame
                 Console.WriteLine(s);
             }
             Console.WriteLine();
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "1", "Play"));
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "2", "Settings"));
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "3", "Exit"));
+            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "1", string.Format("Log = {0}", game.IsLogEnabled)));
+            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "2", "Back"));
 
             bool successfulInput = false;
             while (!successfulInput)
@@ -31,20 +30,14 @@ namespace TextBasedCardGame
                         successfulInput = true;
 
                         Console.Clear();
-                        gameStateManager.TransitionTo(new GamePlayState());
+                        game.EnableLog(!game.IsLogEnabled);
                     }
                     else if (playerInput == 2)
                     {
                         successfulInput = true;
 
                         Console.Clear();
-                        gameStateManager.TransitionTo(new GameSettingsState());
-                    }
-                    else if (playerInput == 3)
-                    {
-                        successfulInput = true;
-
-                        game.CloseGame();
+                        gameStateManager.TransitionTo(new GameMenuState());
                     }
                     else
                     {
