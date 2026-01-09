@@ -14,6 +14,24 @@ namespace TextBasedCardGame
             GameTurnState gameTurnStrategy = gameTurnState == EGameTurnState.Player ? new PrePlayerTurnState() : new PreEnemyTurnState();
             GameTurnStateManager gameTurnStateManager = new GameTurnStateManager(gameTurnStrategy);
 
+            // Draw "Round x" screen
+            Console.Clear();
+            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n");
+            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n\n\n\n\n\n");
+            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n");
+            Console.WriteLine(GameConstants.SPLITTER_TEXT);
+
+            GameUtils.WriteAt(string.Format(GameConstants.ROUND_FORMAT, game.CurrentRound), 16, 6);
+
+            // Wait 3 seconds before showing the fight screen
+            Thread.Sleep(3000);
+
+            GameUtils.ClearConsoleLine(6);
+            GameUtils.WriteAt("FIGHT!", 16, 6);
+
+            // Wait 3 seconds before starting game
+            Thread.Sleep(3000);
+
             while (game.IsPlaying)
             {
                 gameTurnStateManager.DoAction(game);
@@ -21,7 +39,15 @@ namespace TextBasedCardGame
 
             Console.Clear();
             game.ResetGame();
-            gameStateManager.TransitionTo(new GameMenuState());
+
+            if (game.CurrentRound < game.NumberOfRounds)
+            {
+                game.IncrementCurrentRound();
+            }
+            else
+            {
+                gameStateManager.TransitionTo(new GameMenuState());
+            }
         }
 
         private static EGameTurnState DetermineFirstTurn()

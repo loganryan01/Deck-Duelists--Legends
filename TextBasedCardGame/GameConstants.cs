@@ -35,5 +35,7 @@ namespace TextBasedCardGame
         public const string TURN_INFO_FORMAT = "Turn: {0}";
         public const string ENEMY_ACTION_FORMAT = "Enemy has played '{0}'";
         public const string LOG_FORMAT = "Turn {0}: {1} used \"{2}\"";
+        public const string ROUND_FORMAT = "Round {0}";
+        public const string INVAILD_INPUT_MESSAGE = "Need a valid number";
     }
 }

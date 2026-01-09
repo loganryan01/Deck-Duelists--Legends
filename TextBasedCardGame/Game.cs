@@ -38,6 +38,18 @@ namespace TextBasedCardGame
             get {  return turnNumber; }
         }
 
+        private int numberOfRounds = 3;
+        public int NumberOfRounds
+        {
+            get { return numberOfRounds; }
+        }
+
+        private int currentRound = 1;
+        public int CurrentRound
+        { 
+            get { return currentRound; } 
+        }
+
         // Player Info
         private readonly Player player;
         public Player Player
@@ -117,6 +129,16 @@ namespace TextBasedCardGame
         public void EnableLog(bool enable)
         {
             isLogEnabled = enable;
+        }
+
+        public void SetNumberOfRounds(int numberOfRounds)
+        {
+            this.numberOfRounds = numberOfRounds;
+        }
+
+        public void IncrementCurrentRound()
+        {
+            currentRound++;
         }
     }
 }

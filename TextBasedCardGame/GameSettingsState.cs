@@ -16,7 +16,8 @@ namespace TextBasedCardGame
             }
             Console.WriteLine();
             Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "1", string.Format("Log = {0}", game.IsLogEnabled)));
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "2", "Back"));
+            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "2", string.Format("Rounds = {0}", game.NumberOfRounds)));
+            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "3", "Back"));
 
             bool successfulInput = false;
             while (!successfulInput)
@@ -37,16 +38,23 @@ namespace TextBasedCardGame
                         successfulInput = true;
 
                         Console.Clear();
+                        gameStateManager.TransitionTo(new GameSettingsRoundState());
+                    }
+                    else if (playerInput == 3)
+                    {
+                        successfulInput = true;
+
+                        Console.Clear();
                         gameStateManager.TransitionTo(new GameMenuState());
                     }
                     else
                     {
-                        Console.WriteLine("Need a valid number");
+                        Console.WriteLine(GameConstants.INVAILD_INPUT_MESSAGE);
                     }
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("Need a valid number");
+                    Console.WriteLine(GameConstants.INVAILD_INPUT_MESSAGE);
                 }
             }
         }

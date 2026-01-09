@@ -66,5 +66,12 @@ namespace TextBasedCardGame
             Console.SetCursorPosition(x, y);
             Console.Write(s);
         }
+
+        public static void ClearConsoleLine(int y)
+        {
+            Console.SetCursorPosition(0, y);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, y);
+        }
     }
 }

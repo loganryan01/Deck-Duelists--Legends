@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TextBasedCardGame
 {
-    public class GameMenuState : GameState
+    public class GameSettingsRoundState : GameState
     {
         public override void DoAction(Game game)
         {
@@ -15,9 +15,7 @@ namespace TextBasedCardGame
                 Console.WriteLine(s);
             }
             Console.WriteLine();
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "1", "Play"));
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "2", "Settings"));
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "3", "Exit"));
+            Console.WriteLine("How many rounds do you want to play?");
 
             bool successfulInput = false;
             while (!successfulInput)
@@ -26,25 +24,13 @@ namespace TextBasedCardGame
                 {
                     int playerInput = Convert.ToInt32(Console.ReadLine());
 
-                    if (playerInput == 1)
+                    if (playerInput > 0)
                     {
                         successfulInput = true;
 
                         Console.Clear();
-                        gameStateManager.TransitionTo(new GamePlayState());
-                    }
-                    else if (playerInput == 2)
-                    {
-                        successfulInput = true;
-
-                        Console.Clear();
+                        game.SetNumberOfRounds(playerInput);
                         gameStateManager.TransitionTo(new GameSettingsState());
-                    }
-                    else if (playerInput == 3)
-                    {
-                        successfulInput = true;
-
-                        game.CloseGame();
                     }
                     else
                     {
