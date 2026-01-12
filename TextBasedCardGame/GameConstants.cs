@@ -31,7 +31,8 @@ namespace TextBasedCardGame
 
         public const string SPLITTER_TEXT = "=======================================";
         public const string CARD_PRINT_FORMAT = "[{0}] {1}";
-        public const string HERO_INFO_FORMAT = "Health = {0}\t\t   Attack = {1}";
+        public const string HERO_HEALTH_FORMAT = "Health = {0}";
+        public const string HERO_ATTACK_FORMAT = "Attack = {0}";
         public const string TURN_INFO_FORMAT = "Turn: {0}";
         public const string ENEMY_ACTION_FORMAT = "Enemy has played '{0}'";
         public const string LOG_FORMAT = "Turn {0}: {1} used \"{2}\"";

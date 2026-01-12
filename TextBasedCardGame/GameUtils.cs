@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace TextBasedCardGame
 {
+    public enum Alignment
+    {
+        Left,
+        Center,
+        Right
+    }
+    
     public static class GameUtils
     {
         public static void DrawGameBoard(Player player, Player enemy, int turnNumber)
@@ -20,12 +27,14 @@ namespace TextBasedCardGame
 
             // Print Enemy hero stats
             Console.WriteLine(GameConstants.SPLITTER_TEXT);
-            Console.WriteLine("\t     Enemy Hero:");
-            Console.WriteLine(string.Format(GameConstants.HERO_INFO_FORMAT, enemy.HeroHealth, enemy.HeroAttack) + "\n\n\n\n");
+            WriteAt("Enemy Hero:", 0, 3, Alignment.Center);
+            WriteAt(string.Format(GameConstants.HERO_HEALTH_FORMAT, enemy.HeroHealth), 0, 4);
+            WriteAt(string.Format(GameConstants.HERO_ATTACK_FORMAT, enemy.HeroAttack), 0, 4, Alignment.Right);
 
             // Print Player hero stats
-            Console.WriteLine("\t     Player Hero:");
-            Console.WriteLine(string.Format(GameConstants.HERO_INFO_FORMAT, player.HeroHealth, player.HeroAttack));
+            WriteAt("Player Hero:", 0, 9, Alignment.Center);
+            WriteAt(string.Format(GameConstants.HERO_HEALTH_FORMAT, player.HeroHealth), 0, 10);
+            WriteAt(string.Format(GameConstants.HERO_ATTACK_FORMAT, player.HeroAttack), 0, 10, Alignment.Right);
             Console.WriteLine(GameConstants.SPLITTER_TEXT);
 
             // Set cursor position underneath game board when done
@@ -47,7 +56,7 @@ namespace TextBasedCardGame
 
             // Print log title
             WriteAt(GameConstants.SPLITTER_TEXT, 40, 0);
-            WriteAt("Log", 58, 1);
+            WriteAt("Log", 58, 1, Alignment.Center);
 
             // Print the log itself
             WriteAt(GameConstants.SPLITTER_TEXT, 40, 2);
@@ -61,10 +70,35 @@ namespace TextBasedCardGame
             Console.SetCursorPosition(0, 12);
         }
 
-        public static void WriteAt(string s, int x, int y)
+        public static void WriteAt(string s, int x, int y, Alignment alignment = Alignment.Left)
         {
-            Console.SetCursorPosition(x, y);
+            int xPos = x;
+            if (alignment == Alignment.Center)
+            {
+                if (x < GameConstants.SPLITTER_TEXT.Length)
+                {
+                    xPos = (GameConstants.SPLITTER_TEXT.Length - s.Length) / 2;
+                }
+                else
+                {
+                    xPos = ((GameConstants.SPLITTER_TEXT.Length * 3) + 2 - s.Length) / 2;
+                }
+            }
+            else if (alignment == Alignment.Right)
+            {
+                if (x < GameConstants.SPLITTER_TEXT.Length)
+                {
+                    xPos = GameConstants.SPLITTER_TEXT.Length - s.Length;
+                }
+                else
+                {
+                    xPos = (GameConstants.SPLITTER_TEXT.Length * 3) + 2 - s.Length;
+                }
+            }
+
+            Console.SetCursorPosition(xPos, y);
             Console.Write(s);
+            Console.SetCursorPosition(0, y + 1);
         }
 
         public static void ClearConsoleLine(int y)

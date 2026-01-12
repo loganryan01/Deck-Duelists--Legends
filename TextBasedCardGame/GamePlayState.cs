@@ -21,13 +21,13 @@ namespace TextBasedCardGame
             Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n");
             Console.WriteLine(GameConstants.SPLITTER_TEXT);
 
-            GameUtils.WriteAt(string.Format(GameConstants.ROUND_FORMAT, game.CurrentRound), 16, 6);
+            GameUtils.WriteAt(string.Format(GameConstants.ROUND_FORMAT, game.CurrentRound), 16, 6, Alignment.Center);
 
             // Wait 3 seconds before showing the fight screen
             Thread.Sleep(3000);
 
             GameUtils.ClearConsoleLine(6);
-            GameUtils.WriteAt("FIGHT!", 16, 6);
+            GameUtils.WriteAt("FIGHT!", 16, 6, Alignment.Center);
 
             // Wait 3 seconds before starting game
             Thread.Sleep(3000);
