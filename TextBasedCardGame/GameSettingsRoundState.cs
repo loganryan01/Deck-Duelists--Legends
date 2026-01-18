@@ -22,10 +22,12 @@ namespace TextBasedCardGame
             {
                 try
                 {
+                    Console.CursorVisible = true;
                     int playerInput = Convert.ToInt32(Console.ReadLine());
 
                     if (playerInput > 0)
                     {
+                        Console.CursorVisible = false;
                         successfulInput = true;
 
                         Console.Clear();

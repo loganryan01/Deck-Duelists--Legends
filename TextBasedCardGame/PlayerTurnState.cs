@@ -42,9 +42,11 @@ namespace TextBasedCardGame
             {
                 try
                 {
+                    Console.CursorVisible = true;
                     int chosenCardIndex = Convert.ToInt32(Console.ReadLine()) - 1;
                     if (chosenCardIndex >= 0 && chosenCardIndex <= 2)
                     {
+                        Console.CursorVisible = false;
                         successfulInput = true;
 
                         // Activate card's effect

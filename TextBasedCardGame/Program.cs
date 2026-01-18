@@ -52,6 +52,8 @@ namespace TextBasedCardGame
                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED
             );
 
+            Console.CursorVisible = false;
+
             Game game = new Game();
             game.StartGame();
         }

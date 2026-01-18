@@ -24,10 +24,12 @@ namespace TextBasedCardGame
             {
                 try
                 {
+                    Console.CursorVisible = true;
                     int playerInput = Convert.ToInt32(Console.ReadLine());
 
                     if (playerInput == 1)
                     {
+                        Console.CursorVisible = false;
                         successfulInput = true;
 
                         Console.Clear();
@@ -35,6 +37,7 @@ namespace TextBasedCardGame
                     }
                     else if (playerInput == 2)
                     {
+                        Console.CursorVisible = false;
                         successfulInput = true;
 
                         Console.Clear();
@@ -42,6 +45,7 @@ namespace TextBasedCardGame
                     }
                     else if (playerInput == 3)
                     {
+                        Console.CursorVisible = false;
                         successfulInput = true;
 
                         game.CloseGame();
