@@ -16,8 +16,9 @@ namespace TextBasedCardGame
             }
             Console.WriteLine();
             Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "1", string.Format("Log = {0}", game.IsLogEnabled)));
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "2", string.Format("Rounds = {0}", game.NumberOfRounds)));
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "3", "Back"));
+            game.PrintChosenFormat(2);
+            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "3", string.Format(game.CurrentFormat + " = {0}", game.NumberOfRounds)));
+            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "4", "Back"));
 
             bool successfulInput = false;
             while (!successfulInput)
@@ -41,9 +42,17 @@ namespace TextBasedCardGame
                         successfulInput = true;
 
                         Console.Clear();
-                        gameStateManager.TransitionTo(new GameSettingsRoundState());
+                        game.UpdateChosenFormat();
                     }
                     else if (playerInput == 3)
+                    {
+                        Console.CursorVisible = false;
+                        successfulInput = true;
+
+                        Console.Clear();
+                        gameStateManager.TransitionTo(new GameSettingsRoundState());
+                    }
+                    else if (playerInput == 4)
                     {
                         Console.CursorVisible = false;
                         successfulInput = true;

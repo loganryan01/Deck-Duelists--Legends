@@ -15,7 +15,7 @@ namespace TextBasedCardGame
                 Console.WriteLine(s);
             }
             Console.WriteLine();
-            Console.WriteLine("How many rounds do you want to play?");
+            Console.WriteLine(string.Format("How many {0} do you want to play?", game.CurrentFormat.ToLower()));
 
             bool successfulInput = false;
             while (!successfulInput)

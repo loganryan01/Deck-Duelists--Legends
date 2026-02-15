@@ -21,6 +21,7 @@ namespace TextBasedCardGame
                                                   "|_   _|____ _| |_ ___| _ ) __ _ ___ ___ __| |___ / __|__ _ _ _ __| |___ / __|__ _ _ __  ___ ",
                                                   "  | |/ -_) \\ /  _|___| _ \\/ _` (_-</ -_) _` |___| (__/ _` | '_/ _` |___| (_ / _` | '  \\/ -_)",
                                                   "  |_|\\___/_\\_\\\\__|   |___/\\__,_/__/\\___\\__,_|    \\___\\__,_|_| \\__,_|    \\___\\__,_|_|_|_\\___|"};
+        public static readonly string[] GAME_FORMATS = { "Rounds", "Points" };
 
         public static readonly IImmutableList<int> AI_OFFENSIVE_PRIORITY_LIST = ImmutableList.Create((int)CardEffect.IncreaseHeroAttack, (int)CardEffect.DecreaseEnemyHealth, (int)CardEffect.DecreaseEnemyAttack, (int)CardEffect.IncreaseHeroHealth);
         public static readonly IImmutableList<int> AI_DEFENSIVE_PRIORITY_LIST = ImmutableList.Create((int)CardEffect.IncreaseHeroHealth, (int)CardEffect.DecreaseEnemyAttack, (int)CardEffect.IncreaseHeroAttack, (int)CardEffect.DecreaseEnemyHealth);
@@ -38,5 +39,6 @@ namespace TextBasedCardGame
         public const string LOG_FORMAT = "Turn {0}: {1} used \"{2}\"";
         public const string ROUND_FORMAT = "Round {0}";
         public const string INVAILD_INPUT_MESSAGE = "Need a valid number";
+        public const string POINT_FORMAT = "{0} = {1}/{2}";
     }
 }

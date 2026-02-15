@@ -50,6 +50,12 @@ namespace TextBasedCardGame
             get { return currentRound; } 
         }
 
+        private string currentFormat = GameConstants.GAME_FORMATS[0];
+        public string CurrentFormat
+        { 
+            get { return currentFormat; } 
+        }
+
         // Player Info
         private readonly Player player;
         public Player Player
@@ -139,6 +145,44 @@ namespace TextBasedCardGame
         public void IncrementCurrentRound()
         {
             currentRound++;
+        }
+
+        public void PrintChosenFormat(int settingsIndex)
+        {
+            Console.ResetColor();
+            Console.Write(string.Format("[{0}] ", settingsIndex));
+
+            for (int i = 0; i < GameConstants.GAME_FORMATS.Length; i++)
+            {
+                Console.ResetColor();
+                string format = GameConstants.GAME_FORMATS[i];
+                if (i != 0)
+                {
+                    Console.Write(" / ");
+                }
+
+                // Need to know the chosen format
+                if (format == currentFormat)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                }
+                Console.Write(format);
+            }
+
+            Console.ResetColor();
+            Console.Write("\n");
+        }
+
+        public void UpdateChosenFormat()
+        {
+            int currentIndex = Array.IndexOf(GameConstants.GAME_FORMATS, currentFormat);
+
+            if (currentIndex != -1)
+            {
+                currentIndex++;
+                currentIndex %= GameConstants.GAME_FORMATS.Length;
+                currentFormat = GameConstants.GAME_FORMATS[currentIndex];
+            }
         }
     }
 }

@@ -85,5 +85,10 @@ namespace TextBasedCardGame
         {
             wins++;
         }
+
+        public void ResetWinCount()
+        {
+            wins = 0; 
+        }
     }
 }
