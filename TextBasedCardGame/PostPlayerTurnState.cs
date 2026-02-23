@@ -12,6 +12,11 @@ namespace TextBasedCardGame
         {
             if (game.Enemy.HeroHealth <= 0)
             {
+                if (game.IsLogEnabled)
+                {
+                    GameUtils.DrawLog(game.Log);
+                }
+                GameUtils.DrawKOScreen();
                 GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
                 if (game.IsLogEnabled)
                 {

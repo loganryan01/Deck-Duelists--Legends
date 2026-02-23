@@ -107,5 +107,37 @@ namespace TextBasedCardGame
             Console.Write(new string(' ', Console.BufferWidth));
             Console.SetCursorPosition(0, y);
         }
+
+        public static void DrawKOScreen()
+        {
+            Console.Clear();
+            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n");
+            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n\n\n\n\n\n");
+            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n");
+            Console.WriteLine(GameConstants.SPLITTER_TEXT);
+
+            for (int i = 0; i < 7; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.BackgroundColor = ConsoleColor.White;
+                }
+
+                for (int j = 0; j < 8; j++)
+                {
+                    Console.SetCursorPosition(0, 3 + j);
+                    Console.Write(new string(' ', GameConstants.SPLITTER_TEXT.Length));
+                }
+                WriteAt("KO!", 16, 6, Alignment.Center);
+
+                // Wait 3 seconds before showing the fight screen
+                Thread.Sleep(500);
+            }
+        }
     }
 }

@@ -12,7 +12,16 @@ namespace TextBasedCardGame
         {
             if (game.Enemy.Deck.Cards.Count == 0)
             {
+                if (game.IsLogEnabled)
+                {
+                    GameUtils.DrawLog(game.Log);
+                }
+                GameUtils.DrawKOScreen();
                 GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
+                if (game.IsLogEnabled)
+                {
+                    GameUtils.DrawLog(game.Log);
+                }
                 Console.WriteLine("Congratulations! You Win!");
                 Console.WriteLine("Press any key to continue...");
                 Console.ReadKey(true);
