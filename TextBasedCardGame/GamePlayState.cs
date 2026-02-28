@@ -33,11 +33,8 @@ namespace TextBasedCardGame
             }
             else
             {
-                if (game.CurrentFormat == GameConstants.GAME_FORMATS[1])
-                {
-                    DrawPointWinnerScreen(game);
-                }
-                
+                DrawPointWinnerScreen(game);
+
                 game.Player.ResetWinCount();
                 game.Enemy.ResetWinCount();
                 gameStateManager.TransitionTo(new GameMenuState());
@@ -60,7 +57,14 @@ namespace TextBasedCardGame
             Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n");
             Console.WriteLine(GameConstants.SPLITTER_TEXT);
 
-            GameUtils.WriteAt(string.Format(GameConstants.ROUND_FORMAT, game.CurrentRound), 16, 6, Alignment.Center);
+            if (game.NumberOfRounds > 1)
+            {
+                GameUtils.WriteAt(string.Format(GameConstants.ROUND_FORMAT, game.CurrentRound), 16, 6, Alignment.Center);
+            }
+            else
+            {
+                GameUtils.WriteAt("Ready", 16, 6, Alignment.Center);
+            }
 
             // Wait 3 seconds before showing the fight screen
             Thread.Sleep(3000);
