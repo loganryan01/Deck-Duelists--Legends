@@ -14,16 +14,14 @@ namespace TextBasedCardGame
             {
                 if (game.IsLogEnabled)
                 {
-                    GameUtils.DrawLog(game.Log);
+                    GameUtils.UpdateLog(game.Log);
                 }
                 GameUtils.DrawKOScreen();
                 GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
-                if (game.IsLogEnabled)
-                {
-                    GameUtils.DrawLog(game.Log);
-                }
-                Console.WriteLine("Sorry... You Lose...");
-                Console.WriteLine("Press any key to continue...");
+                GameUtils.ClearConsoleLine(16);
+                GameUtils.WriteAt("Sorry... You Lose...", 0, 16);
+                GameUtils.ClearConsoleLine(17);
+                GameUtils.WriteAt("Press any key to continue...", 0, 17);
                 Console.ReadKey(true);
 
                 game.StopGame();

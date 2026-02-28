@@ -14,7 +14,7 @@ namespace TextBasedCardGame
             GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
             if (game.IsLogEnabled)
             {
-                GameUtils.DrawLog(game.Log);
+                GameUtils.UpdateLog(game.Log);
             }
 
             while (game.Enemy.Hand.Count < 3)
@@ -50,7 +50,8 @@ namespace TextBasedCardGame
                     game.Player.DecrementHeroHealth();
                     break;
             }
-            Console.WriteLine(string.Format(GameConstants.ENEMY_ACTION_FORMAT, game.Enemy.Hand[chosenCardIndex].Name));
+            GameUtils.ClearConsoleLine(16);
+            GameUtils.WriteAt(string.Format(GameConstants.ENEMY_ACTION_FORMAT, game.Enemy.Hand[chosenCardIndex].Name), 0, 16);
 
             game.AddToLog("Enemy", game.Enemy.Hand[chosenCardIndex].Name);
 
@@ -69,8 +70,6 @@ namespace TextBasedCardGame
             game.IncrementTurnNumber();
 
             gameTurnStateManager.TransitionTo(new PostEnemyTurnState());
-
-            Console.WriteLine();
         }
     }
 }

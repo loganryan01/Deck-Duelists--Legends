@@ -18,30 +18,28 @@ namespace TextBasedCardGame
     {
         public static void DrawGameBoard(Player player, Player enemy, int turnNumber)
         {
-            // Clear console
-            Console.Clear();
-            
             // Print Turn number
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
-            Console.WriteLine(string.Format(GameConstants.TURN_INFO_FORMAT, turnNumber));
+            ClearConsoleLine(1);
+            WriteAt(string.Format(GameConstants.TURN_INFO_FORMAT, turnNumber), 0, 1);
 
             // Print Enemy hero stats
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
+            ClearConsoleLine(3);
             WriteAt("Enemy Hero:", 0, 3, Alignment.Center);
+
+            ClearConsoleLine(4);
             WriteAt(string.Format(GameConstants.HERO_HEALTH_FORMAT, enemy.HeroHealth), 0, 4);
             WriteAt(string.Format(GameConstants.HERO_ATTACK_FORMAT, enemy.HeroAttack), 0, 4, Alignment.Right);
 
             // Print Player hero stats
+            ClearConsoleLine(9);
             WriteAt("Player Hero:", 0, 9, Alignment.Center);
+
+            ClearConsoleLine(10);
             WriteAt(string.Format(GameConstants.HERO_HEALTH_FORMAT, player.HeroHealth), 0, 10);
             WriteAt(string.Format(GameConstants.HERO_ATTACK_FORMAT, player.HeroAttack), 0, 10, Alignment.Right);
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
-
-            // Set cursor position underneath game board when done
-            Console.SetCursorPosition(0, 12);
         }
 
-        public static void DrawLog(List<string> log)
+        public static void DrawLog()
         {
             // Print walls for box
             for (int i = 0; i < 18; i++)
@@ -60,14 +58,23 @@ namespace TextBasedCardGame
 
             // Print the log itself
             WriteAt(GameConstants.SPLITTER_TEXT, 40, 2);
+            WriteAt(GameConstants.SPLITTER_TEXT, 40, 17);
+        }
+
+        public static void UpdateLog(List<string> log)
+        {
             for (int i = 0; i < log.Count; i++)
             {
                 WriteAt(log[i], 40, i + 3);
             }
-            WriteAt(GameConstants.SPLITTER_TEXT, 40, 17);
+        }
 
-            // Set cursor position underneath game board when done
-            Console.SetCursorPosition(0, 12);
+        public static void ClearLog()
+        {
+            for (int i = 3; i < 17; i++)
+            {
+                ClearConsoleLine(40, i);
+            }
         }
 
         public static void WriteAt(string s, int x, int y, Alignment alignment = Alignment.Left)
@@ -104,18 +111,19 @@ namespace TextBasedCardGame
         public static void ClearConsoleLine(int y)
         {
             Console.SetCursorPosition(0, y);
-            Console.Write(new string(' ', Console.BufferWidth));
+            Console.Write(new string(' ', GameConstants.SPLITTER_TEXT.Length));
             Console.SetCursorPosition(0, y);
+        }
+
+        public static void ClearConsoleLine(int x, int y)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.Write(new string(' ', GameConstants.SPLITTER_TEXT.Length));
+            Console.SetCursorPosition(x, y);
         }
 
         public static void DrawKOScreen()
         {
-            Console.Clear();
-            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n\n\n\n\n\n");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
-
             for (int i = 0; i < 7; i++)
             {
                 if (i % 2 == 0)
@@ -135,9 +143,11 @@ namespace TextBasedCardGame
                 }
                 WriteAt("KO!", 16, 6, Alignment.Center);
 
-                // Wait 3 seconds before showing the fight screen
+                // Wait 0.5 seconds before showing the fight screen
                 Thread.Sleep(500);
             }
+
+            ClearConsoleLine(6);
         }
     }
 }

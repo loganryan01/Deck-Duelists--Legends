@@ -14,16 +14,50 @@ namespace TextBasedCardGame
             GameTurnState gameTurnStrategy = gameTurnState == EGameTurnState.Player ? new PrePlayerTurnState() : new PreEnemyTurnState();
             GameTurnStateManager gameTurnStateManager = new GameTurnStateManager(gameTurnStrategy);
 
+            if (game.CurrentRound == 1)
+            {
+                Console.Clear();
+                Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n");
+                Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n\n\n\n\n\n");
+                Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n");
+                Console.WriteLine(GameConstants.SPLITTER_TEXT);
+
+                if (game.IsLogEnabled)
+                {
+                    GameUtils.DrawLog();
+                }
+            }
+
             DrawRoundScreen(game);
+
+            // Draw Player hand
+            while (game.Player.Hand.Count < 3)
+            {
+                Card card = game.Player.Deck.DrawCard();
+                game.Player.Hand.Add(card);
+            }
+
+            // Print Player hand
+            int i = 0;
+            foreach (Card card in game.Player.Hand)
+            {
+                GameUtils.ClearConsoleLine(12 + i);
+                GameUtils.WriteAt(string.Format(GameConstants.CARD_PRINT_FORMAT, i + 1, card.Name), 0, 12 + i);
+                i++;
+            }
 
             while (game.IsPlaying)
             {
                 gameTurnStateManager.DoAction(game);
             }
 
+            if (game.IsLogEnabled)
+            {
+                GameUtils.ClearLog();
+            }
+
             DrawPointScreen(game);
 
-            Console.Clear();
             game.ResetGame();
 
             if (game.CurrentFormat == GameConstants.GAME_FORMATS[0] && game.CurrentRound < game.NumberOfRounds || 
@@ -37,6 +71,9 @@ namespace TextBasedCardGame
 
                 game.Player.ResetWinCount();
                 game.Enemy.ResetWinCount();
+
+                Console.Clear();
+
                 gameStateManager.TransitionTo(new GameMenuState());
             }
         }
@@ -50,13 +87,24 @@ namespace TextBasedCardGame
 
         private void DrawRoundScreen(Game game)
         {
-            // Draw "Round x" screen
-            Console.Clear();
-            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n\n\n\n\n\n");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
+            GameUtils.ClearConsoleLine(1);
 
+            for (int i = 3; i < 11; i++)
+            {
+                GameUtils.ClearConsoleLine(i);
+            }
+
+            for (int j = 12; j < 15; j++)
+            {
+                GameUtils.ClearConsoleLine(j);
+            }
+
+            for (int k = 16; k < 18; k++)
+            {
+                GameUtils.ClearConsoleLine(k);
+            }
+
+            // Draw "Round x" screen
             if (game.NumberOfRounds > 1)
             {
                 GameUtils.WriteAt(string.Format(GameConstants.ROUND_FORMAT, game.CurrentRound), 16, 6, Alignment.Center);
@@ -74,15 +122,28 @@ namespace TextBasedCardGame
 
             // Wait 3 seconds before starting game
             Thread.Sleep(3000);
+
+            GameUtils.ClearConsoleLine(6);
         }
 
         private void DrawPointScreen(Game game)
         {
-            Console.Clear();
-            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n\n\n\n\n\n");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
+            GameUtils.ClearConsoleLine(1);
+
+            for (int i = 3; i < 11; i++)
+            {
+                GameUtils.ClearConsoleLine(i);
+            }
+
+            for (int j = 12; j < 15; j++)
+            {
+                GameUtils.ClearConsoleLine(j);
+            }
+
+            for (int k = 16; k < 18; k++)
+            {
+                GameUtils.ClearConsoleLine(k);
+            }
 
             GameUtils.WriteAt("Points", 16, 1, Alignment.Center);
             GameUtils.WriteAt(string.Format(GameConstants.POINT_FORMAT, "Player", game.Player.Wins, game.NumberOfRounds), 0, 6);
@@ -110,11 +171,6 @@ namespace TextBasedCardGame
 
         private void DrawPointWinnerScreen(Game game)
         {
-            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n\n\n\n\n\n");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
-
             GameUtils.WriteAt("Points", 16, 1, Alignment.Center);
 
             if (game.Player.Wins > game.Enemy.Wins)

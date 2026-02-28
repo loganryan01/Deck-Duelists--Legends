@@ -14,7 +14,7 @@ namespace TextBasedCardGame
             GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
             if (game.IsLogEnabled)
             {
-                GameUtils.DrawLog(game.Log);
+                GameUtils.UpdateLog(game.Log);
             }
 
             // Draw Player hand
@@ -28,14 +28,14 @@ namespace TextBasedCardGame
             int i = 0;
             foreach (Card card in game.Player.Hand)
             {
-                Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, i + 1, card.Name));
+                GameUtils.ClearConsoleLine(12 + i);
+                GameUtils.WriteAt(string.Format(GameConstants.CARD_PRINT_FORMAT, i + 1, card.Name), 0, 12 + i);
                 i++;
             }
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
 
             // Get Player input
-            Console.WriteLine("What card do you want to play?");
-            Console.WriteLine(GameConstants.SPLITTER_TEXT);
+            GameUtils.ClearConsoleLine(16);
+            GameUtils.WriteAt("What card do you want to play?", 0, 16);
 
             bool successfulInput = false;
             while (!successfulInput)
@@ -75,24 +75,40 @@ namespace TextBasedCardGame
                             game.Enemy.DecreaseHeroHealth(game.Player.HeroAttack);
                         }
 
+                        for (int j = 0; j < 3; j++)
+                        {
+                            GameUtils.ClearConsoleLine(12 + j);
+                            if (j <= 1)
+                            {
+                                Card card = game.Player.Hand[j];
+                                GameUtils.WriteAt(string.Format(GameConstants.CARD_PRINT_FORMAT, j + 1, card.Name), 0, 12 + j);
+                            }
+                        }
+
+                        GameUtils.ClearConsoleLine(16);
+                        GameUtils.ClearConsoleLine(17);
+
                         gameTurnStateManager.TransitionTo(new PostPlayerTurnState());
 
                         // End of turn
                         game.IncrementTurnNumber();
-                        Console.WriteLine();
                     }
                     else
                     {
                         // Print message to tell the player they need input a number between 1 and 3
                         // Then reset the player's turn
-                        Console.WriteLine("Need a number between 1 and 3");
+                        GameUtils.ClearConsoleLine(16);
+                        GameUtils.ClearConsoleLine(17);
+                        GameUtils.WriteAt(GameConstants.INVAILD_INPUT_MESSAGE, 0, 16);
                     }
                 }
                 catch (Exception)
                 {
                     // Print message to tell the player they need input a number and not a letter
                     // Then reset the player's turn
-                    Console.WriteLine("Need a number between 1 and 3");
+                    GameUtils.ClearConsoleLine(16);
+                    GameUtils.ClearConsoleLine(17);
+                    GameUtils.WriteAt(GameConstants.INVAILD_INPUT_MESSAGE, 0, 16);
                 }
             }
         }
