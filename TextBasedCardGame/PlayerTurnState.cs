@@ -1,116 +1,190 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TextBasedCardGame
 {
+    /// <summary>
+    /// Handles the player's turn.
+    /// Responsible for displaying the board, drawing cards,
+    /// processing player input, and applying card effects.
+    /// </summary>
     public class PlayerTurnState : GameTurnState
     {
         public override void DoAction(Game game)
         {
+            //------------------------------------------------
+            // Draw game board
+            //------------------------------------------------
+
             GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
+
             if (game.IsLogEnabled)
             {
                 GameUtils.UpdateLog(game.Log);
             }
 
-            // Draw Player hand
-            while (game.Player.Hand.Count < 3)
+            //------------------------------------------------
+            // Ensure player has 3 cards
+            //------------------------------------------------
+
+            while (game.Player.Hand.Count < GameConstants.MAX_HAND_SIZE)
             {
                 Card card = game.Player.Deck.DrawCard();
                 game.Player.Hand.Add(card);
             }
 
-            // Print Player hand
-            int i = 0;
+            //------------------------------------------------
+            // Display player's hand
+            //------------------------------------------------
+
+            int index = 0;
+
             foreach (Card card in game.Player.Hand)
             {
-                GameUtils.ClearConsoleLine(12 + i);
-                GameUtils.WriteAt(string.Format(GameConstants.CARD_PRINT_FORMAT, i + 1, card.Name), 0, 12 + i);
-                i++;
+                GameUtils.ClearConsoleLine(12 + index);
+
+                GameUtils.WriteAt(
+                    string.Format(GameConstants.CARD_PRINT_FORMAT, index + 1, card.Name), 
+                    0, 
+                    12 + index
+                );
+
+                index++;
             }
 
-            // Get Player input
+            //------------------------------------------------
+            // Ask player which card to play
+            //------------------------------------------------
+
             GameUtils.ClearConsoleLine(16);
-            GameUtils.WriteAt("What card do you want to play?", 0, 16);
+            GameUtils.WriteAt(GameConstants.PLAYER_CHOOSE_MESSAGE, 0, 16);
 
             bool successfulInput = false;
+
             while (!successfulInput)
             {
                 try
                 {
                     Console.CursorVisible = true;
+
                     int chosenCardIndex = Convert.ToInt32(Console.ReadLine()) - 1;
-                    if (chosenCardIndex >= 0 && chosenCardIndex <= 2)
+
+                    if (chosenCardIndex >= 0 && chosenCardIndex <= game.Player.Hand.Count)
                     {
                         Console.CursorVisible = false;
                         successfulInput = true;
 
-                        // Activate card's effect
-                        switch (game.Player.Hand[chosenCardIndex].EffectIndex)
-                        {
-                            case (int)CardEffect.IncreaseHeroAttack:
-                                game.Player.IncrementHeroAttack();
-                                break;
-                            case (int)CardEffect.IncreaseHeroHealth:
-                                game.Player.IncrementHeroHealth();
-                                break;
-                            case (int)CardEffect.DecreaseEnemyAttack:
-                                game.Enemy.DecrementHeroAttack();
-                                break;
-                            case (int)CardEffect.DecreaseEnemyHealth:
-                                game.Enemy.DecrementHeroHealth();
-                                break;
-                        }
-                        game.AddToLog("Player", game.Player.Hand[chosenCardIndex].Name);
-
-                        game.Player.Hand.RemoveAt(chosenCardIndex);
-
-                        // Attack the Enemy hero
-                        if (game.Player.HeroAttack > 0)
-                        {
-                            game.Enemy.DecreaseHeroHealth(game.Player.HeroAttack);
-                        }
-
-                        for (int j = 0; j < 3; j++)
-                        {
-                            GameUtils.ClearConsoleLine(12 + j);
-                            if (j <= 1)
-                            {
-                                Card card = game.Player.Hand[j];
-                                GameUtils.WriteAt(string.Format(GameConstants.CARD_PRINT_FORMAT, j + 1, card.Name), 0, 12 + j);
-                            }
-                        }
-
-                        GameUtils.ClearConsoleLine(16);
-                        GameUtils.ClearConsoleLine(17);
-
-                        gameTurnStateManager.TransitionTo(new PostPlayerTurnState());
-
-                        // End of turn
-                        game.IncrementTurnNumber();
+                        PlayCard(game, chosenCardIndex);
                     }
                     else
                     {
-                        // Print message to tell the player they need input a number between 1 and 3
-                        // Then reset the player's turn
-                        GameUtils.ClearConsoleLine(16);
-                        GameUtils.ClearConsoleLine(17);
-                        GameUtils.WriteAt(GameConstants.INVAILD_INPUT_MESSAGE, 0, 16);
+                        PrintInvalidInput();
                     }
                 }
                 catch (Exception)
                 {
-                    // Print message to tell the player they need input a number and not a letter
-                    // Then reset the player's turn
-                    GameUtils.ClearConsoleLine(16);
-                    GameUtils.ClearConsoleLine(17);
-                    GameUtils.WriteAt(GameConstants.INVAILD_INPUT_MESSAGE, 0, 16);
+                    PrintInvalidInput();
                 }
             }
+        }
+
+        //------------------------------------------------
+        // Card Resolution
+        //------------------------------------------------
+        private void PlayCard(Game game, int chosenCardIndex)
+        {
+            Card chosenCard = game.Player.Hand[chosenCardIndex];
+
+            //------------------------------------------------
+            // Apply card effect
+            //------------------------------------------------
+
+            switch (chosenCard.Effect)
+            {
+                case CardEffect.IncreaseHeroAttack:
+                    game.Player.IncrementHeroAttack();
+                    break;
+
+                case CardEffect.IncreaseHeroHealth:
+                    game.Player.ModifyHeroHealth(1);
+                    break;
+
+                case CardEffect.DecreaseEnemyAttack:
+                    game.Enemy.DecrementHeroAttack();
+                    break;
+
+                case CardEffect.DecreaseEnemyHealth:
+                    game.Enemy.ModifyHeroHealth(-1);
+                    break;
+            }
+
+            //------------------------------------------------
+            // Log action
+            //------------------------------------------------
+
+            game.AddToLog(GameConstants.DEFAULT_PLAYER_NAME, chosenCard.Name);
+
+            //------------------------------------------------
+            // Remove card from hand
+            //------------------------------------------------
+
+            game.Player.Hand.RemoveAt(chosenCardIndex);
+
+            //------------------------------------------------
+            // Player attacks enemy hero
+            //------------------------------------------------
+
+            if (game.Player.HeroAttack > GameConstants.MINIMUM_ATTACK_NUMBER)
+            {
+                game.Enemy.ModifyHeroHealth(-game.Player.HeroAttack);
+            }
+
+            //------------------------------------------------
+            // Redraw player hand
+            //------------------------------------------------
+
+            for (int i = 0; i < GameConstants.MAX_HAND_SIZE; i++)
+            {
+                GameUtils.ClearConsoleLine(12 + i);
+
+                if (i < game.Player.Hand.Count)
+                {
+                    Card card = game.Player.Hand[i];
+
+                    GameUtils.WriteAt(
+                        string.Format(GameConstants.CARD_PRINT_FORMAT, i + 1, card.Name), 
+                        0, 
+                        12 + i
+                    );
+                }
+            }
+
+            //------------------------------------------------
+            // Clear input area
+            //------------------------------------------------
+
+            GameUtils.ClearConsoleLine(16);
+            GameUtils.ClearConsoleLine(17);
+
+            //------------------------------------------------
+            // Move to next turn state
+            //------------------------------------------------
+
+            gameTurnStateManager.TransitionTo(new PostPlayerTurnState());
+
+            // Increment turn number
+            game.IncrementTurnNumber();
+        }
+
+        //------------------------------------------------
+        // Error handling
+        //------------------------------------------------
+
+        private void PrintInvalidInput()
+        {
+            GameUtils.ClearConsoleLine(16);
+            GameUtils.ClearConsoleLine(17);
+
+            GameUtils.WriteAt(GameConstants.INVALID_INPUT_MESSAGE, 0, 16);
         }
     }
 }

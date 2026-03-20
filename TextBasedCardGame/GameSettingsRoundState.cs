@@ -15,7 +15,7 @@ namespace TextBasedCardGame
                 Console.WriteLine(s);
             }
             Console.WriteLine();
-            Console.WriteLine(string.Format("How many {0} do you want to play?", game.CurrentFormat.ToLower()));
+            Console.WriteLine(string.Format(GameConstants.GAMES_FORMAT, game.CurrentFormat.ToLower()));
 
             bool successfulInput = false;
             while (!successfulInput)
@@ -36,12 +36,12 @@ namespace TextBasedCardGame
                     }
                     else
                     {
-                        Console.WriteLine(GameConstants.INVAILD_INPUT_MESSAGE);
+                        Console.WriteLine(GameConstants.INVALID_INPUT_MESSAGE);
                     }
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine(GameConstants.INVAILD_INPUT_MESSAGE);
+                    Console.WriteLine(GameConstants.INVALID_INPUT_MESSAGE);
                 }
             }
         }

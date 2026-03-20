@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TextBasedCardGame
+﻿namespace TextBasedCardGame
 {
     public class GameSettingsState : GameState
     {
@@ -15,10 +9,10 @@ namespace TextBasedCardGame
                 Console.WriteLine(s);
             }
             Console.WriteLine();
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "1", string.Format("Log = {0}", game.IsLogEnabled)));
+            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "1", string.Format(GameConstants.LOG_SETTING_FORMAT, game.IsLogEnabled)));
             game.PrintChosenFormat(2);
             Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "3", string.Format(game.CurrentFormat + " = {0}", game.NumberOfRounds)));
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "4", "Back"));
+            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "4", GameConstants.BACK_OPTION_TEXT));
 
             bool successfulInput = false;
             while (!successfulInput)
@@ -62,12 +56,12 @@ namespace TextBasedCardGame
                     }
                     else
                     {
-                        Console.WriteLine(GameConstants.INVAILD_INPUT_MESSAGE);
+                        Console.WriteLine(GameConstants.INVALID_INPUT_MESSAGE);
                     }
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine(GameConstants.INVAILD_INPUT_MESSAGE);
+                    Console.WriteLine(GameConstants.INVALID_INPUT_MESSAGE);
                 }
             }
         }

@@ -1,65 +1,106 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TextBasedCardGame
 {
+    /// <summary>
+    /// Main menu state of the game.
+    /// Allows the player to start the game, open settings, or exit.
+    /// </summary>
     public class GameMenuState : GameState
     {
         public override void DoAction(Game game)
         {
+            // Print the game title
             foreach (var s in GameConstants.TITLE)
             {
                 Console.WriteLine(s);
             }
+
             Console.WriteLine();
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "1", "Play"));
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "2", "Settings"));
-            Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, "3", "Exit"));
+
+            // Print menu options
+            for (int i = 0; i < GameConstants.GAME_MENU_OPTIONS.Length; i++)
+            {
+                Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, (i + 1).ToString(), GameConstants.GAME_MENU_OPTIONS[i]));
+            }
 
             bool successfulInput = false;
+
+            // Continue asking for input until a valid option is chosen
             while (!successfulInput)
             {
                 try
                 {
                     Console.CursorVisible = true;
+
                     int playerInput = Convert.ToInt32(Console.ReadLine());
 
-                    if (playerInput == 1)
+                    switch (playerInput)
                     {
-                        Console.CursorVisible = false;
-                        successfulInput = true;
+                        case 1:
+                            StartGame();
+                            successfulInput = true;
+                            break;
 
-                        Console.Clear();
-                        gameStateManager.TransitionTo(new GamePlayState());
-                    }
-                    else if (playerInput == 2)
-                    {
-                        Console.CursorVisible = false;
-                        successfulInput = true;
+                        case 2:
+                            OpenSettings();
+                            successfulInput = true;
+                            break;
 
-                        Console.Clear();
-                        gameStateManager.TransitionTo(new GameSettingsState());
-                    }
-                    else if (playerInput == 3)
-                    {
-                        Console.CursorVisible = false;
-                        successfulInput = true;
+                        case 3:
+                            ExitGame(game);
+                            successfulInput = true;
+                            break;
 
-                        game.CloseGame();
-                    }
-                    else
-                    {
-                        Console.WriteLine(GameConstants.INVAILD_INPUT_MESSAGE);
+                        default:
+                            PrintInvalidInput();
+                            break;
                     }
                 }
-                catch (Exception)
+                catch
                 {
-                    Console.WriteLine(GameConstants.INVAILD_INPUT_MESSAGE);
+                    PrintInvalidInput();
                 }
             }
+        }
+
+        /// <summary>
+        /// Starts the gameplay state.
+        /// </summary>
+        private void StartGame()
+        {
+            Console.CursorVisible = false;
+            Console.Clear();
+
+            gameStateManager.TransitionTo(new GamePlayState());
+        }
+
+        /// <summary>
+        /// Opens the settings menu.
+        /// </summary>
+        private void OpenSettings()
+        {
+            Console.CursorVisible = false;
+            Console.Clear();
+
+            gameStateManager.TransitionTo(new GameSettingsState());
+        }
+
+        /// <summary>
+        /// Exits the game.
+        /// </summary>
+        private void ExitGame(Game game)
+        {
+            Console.CursorVisible = false;
+            game.CloseGame();
+        }
+
+        /// <summary>
+        /// Displays an invalid input message.
+        /// </summary>
+        private void PrintInvalidInput()
+        {
+            Console.WriteLine(GameConstants.INVALID_INPUT_MESSAGE);
         }
     }
 }

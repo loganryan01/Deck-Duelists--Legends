@@ -1,31 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TextBasedCardGame
+﻿namespace TextBasedCardGame
 {
+    /// <summary>
+    /// Represents a single card in the game.
+    /// 
+    /// Each card has a name and an associated effect.
+    /// </summary>
     public class Card
     {
+        //------------------------------------------------
+        // FIELDS & PROPERTIES
+        //------------------------------------------------
+
         private readonly string name;
-        public string Name
-        {
-            get { return name; }
-        }
+        public string Name => name;
 
-        private readonly int effectIndex;
-        public int EffectIndex
-        {
-            get { return effectIndex; }
-        }
+        private readonly CardEffect effect;
+        public CardEffect Effect => effect;
 
-        public Card(string name, int effectIndex)
+        //------------------------------------------------
+        // CONSTRUCTOR
+        //------------------------------------------------
+
+        public Card(string name, CardEffect effect)
         {
             this.name = name;
-            this.effectIndex = effectIndex;
+            this.effect = effect;
         }
 
+        //------------------------------------------------
+        // METHODS
+        //------------------------------------------------
+
+        /// <summary>
+        /// Returns the card name when printed.
+        /// </summary>
         public override string ToString()
         {
             return name;

@@ -1,22 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TextBasedCardGame
 {
+    /// <summary>
+    /// Handles the main gameplay loop for a round.
+    /// Responsible for determining turn order, drawing cards,
+    /// executing turns, and handling round results.
+    /// </summary>
     public class GamePlayState : GameState
     {
+        private static readonly Random random = new Random();
+        
         public override void DoAction(Game game)
         {
+            //------------------------------------------------
+            // Determine which player goes first
+            //------------------------------------------------
+
             EGameTurnState gameTurnState = DetermineFirstTurn();
-            GameTurnState gameTurnStrategy = gameTurnState == EGameTurnState.Player ? new PrePlayerTurnState() : new PreEnemyTurnState();
-            GameTurnStateManager gameTurnStateManager = new GameTurnStateManager(gameTurnStrategy);
+
+            GameTurnState gameTurnStrategy = 
+                gameTurnState == EGameTurnState.Player 
+                ? new PrePlayerTurnState() 
+                : new PreEnemyTurnState();
+
+            GameTurnStateManager gameTurnStateManager = 
+                new GameTurnStateManager(gameTurnStrategy);
+
+            //------------------------------------------------
+            // Draw initial screen for the first round
+            //------------------------------------------------
 
             if (game.CurrentRound == 1)
             {
                 Console.Clear();
+
                 Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n");
                 Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n\n\n\n\n\n");
                 Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n");
@@ -28,40 +46,80 @@ namespace TextBasedCardGame
                 }
             }
 
+            //------------------------------------------------
+            // Round start animation
+            //------------------------------------------------
+
             DrawRoundScreen(game);
 
-            // Draw Player hand
+            //------------------------------------------------
+            // Ensure player has 3 cards in hand
+            //------------------------------------------------
+
             while (game.Player.Hand.Count < 3)
             {
                 Card card = game.Player.Deck.DrawCard();
                 game.Player.Hand.Add(card);
             }
 
-            // Print Player hand
-            int i = 0;
+            //------------------------------------------------
+            // Display player hand
+            //------------------------------------------------
+
+            int index = 0;
+
             foreach (Card card in game.Player.Hand)
             {
-                GameUtils.ClearConsoleLine(12 + i);
-                GameUtils.WriteAt(string.Format(GameConstants.CARD_PRINT_FORMAT, i + 1, card.Name), 0, 12 + i);
-                i++;
+                GameUtils.ClearConsoleLine(GameConstants.HAND_Y_POSITION + index);
+
+                GameUtils.WriteAt(
+                    string.Format(GameConstants.CARD_PRINT_FORMAT, index + 1, card.Name),
+                    GameConstants.HAND_X_POSITION,
+                    GameConstants.HAND_Y_POSITION + index
+                );
+
+                index++;
             }
+
+            //------------------------------------------------
+            // Main turn loop
+            //------------------------------------------------
 
             while (game.IsPlaying)
             {
                 gameTurnStateManager.DoAction(game);
             }
 
+            //------------------------------------------------
+            // Clear log after round ends
+            //------------------------------------------------
+
             if (game.IsLogEnabled)
             {
                 GameUtils.ClearLog();
             }
 
+            //------------------------------------------------
+            // Show round result
+            //------------------------------------------------
+
             DrawPointScreen(game);
 
             game.ResetGame();
 
-            if (game.CurrentFormat == GameConstants.GAME_FORMATS[0] && game.CurrentRound < game.NumberOfRounds || 
-                game.CurrentFormat == GameConstants.GAME_FORMATS[1] && game.Player.Wins < game.NumberOfRounds && game.Enemy.Wins < game.NumberOfRounds)
+            //------------------------------------------------
+            // Determine whether another round should start
+            //------------------------------------------------
+
+            bool continueRounds =
+                game.CurrentFormat == GameConstants.GAME_FORMATS[0] && 
+                game.CurrentRound < game.NumberOfRounds ||
+
+                game.CurrentFormat == GameConstants.GAME_FORMATS[1] && 
+                game.Player.Wins < game.NumberOfRounds && 
+                game.Enemy.Wins < game.NumberOfRounds;
+
+            if (continueRounds)
             {
                 game.IncrementCurrentRound();
             }
@@ -78,116 +136,168 @@ namespace TextBasedCardGame
             }
         }
 
+        /// <summary>
+        /// Randomly determines which player takes the first turn.
+        /// </summary>
+        /// <returns></returns>
         private static EGameTurnState DetermineFirstTurn()
         {
-            Random random = new Random();
-            int playerNumber = random.Next(2);
-            return (EGameTurnState)playerNumber;
+            return (EGameTurnState)random.Next(2);
         }
+
+        //------------------------------------------------
+        // Round Intro Screen
+        //------------------------------------------------
 
         private void DrawRoundScreen(Game game)
         {
-            GameUtils.ClearConsoleLine(1);
+            ClearGameBoard();
 
-            for (int i = 3; i < 11; i++)
-            {
-                GameUtils.ClearConsoleLine(i);
-            }
+            // Show round number or ready message
+            GameUtils.WriteAt(
+                    game.NumberOfRounds > 1 ? string.Format(GameConstants.ROUND_FORMAT, game.CurrentRound) : GameConstants.READY_MESSAGE,
+                    GameConstants.MESSAGE_X_POSITION,
+                    GameConstants.MESSAGE_Y_POSITION,
+                    Alignment.Center
+            );
 
-            for (int j = 12; j < 15; j++)
-            {
-                GameUtils.ClearConsoleLine(j);
-            }
+            Thread.Sleep(GameConstants.THREE_SECOND_DELAY);
 
-            for (int k = 16; k < 18; k++)
-            {
-                GameUtils.ClearConsoleLine(k);
-            }
+            GameUtils.ClearConsoleLine(GameConstants.MESSAGE_Y_POSITION);
+            GameUtils.WriteAt(
+                GameConstants.FIGHT_MESSAGE, 
+                GameConstants.MESSAGE_X_POSITION, 
+                GameConstants.MESSAGE_Y_POSITION, 
+                Alignment.Center
+            );
 
-            // Draw "Round x" screen
-            if (game.NumberOfRounds > 1)
-            {
-                GameUtils.WriteAt(string.Format(GameConstants.ROUND_FORMAT, game.CurrentRound), 16, 6, Alignment.Center);
-            }
-            else
-            {
-                GameUtils.WriteAt("Ready", 16, 6, Alignment.Center);
-            }
+            Thread.Sleep(GameConstants.THREE_SECOND_DELAY);
 
-            // Wait 3 seconds before showing the fight screen
-            Thread.Sleep(3000);
-
-            GameUtils.ClearConsoleLine(6);
-            GameUtils.WriteAt("FIGHT!", 16, 6, Alignment.Center);
-
-            // Wait 3 seconds before starting game
-            Thread.Sleep(3000);
-
-            GameUtils.ClearConsoleLine(6);
+            GameUtils.ClearConsoleLine(GameConstants.MESSAGE_Y_POSITION);
         }
+
+        //------------------------------------------------
+        // Round Result Screen
+        //------------------------------------------------
 
         private void DrawPointScreen(Game game)
         {
-            GameUtils.ClearConsoleLine(1);
+            ClearGameBoard();
 
-            for (int i = 3; i < 11; i++)
+            GameUtils.WriteAt(GameConstants.POINTS_TITLE, 16, 1, Alignment.Center);
+
+            GameUtils.WriteAt(
+                string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_PLAYER_NAME, game.Player.Wins, game.NumberOfRounds), 
+                0, 
+                6
+            );
+
+            GameUtils.WriteAt(
+                string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_ENEMY_NAME, game.Enemy.Wins, game.NumberOfRounds), 
+                0, 
+                6, 
+                Alignment.Right
+            );
+
+            //------------------------------------------------
+            // Determine round winner
+            //------------------------------------------------
+
+            if (game.Player.Deck.IsEmpty() || game.Player.HeroHealth <= 0)
             {
-                GameUtils.ClearConsoleLine(i);
+                game.Enemy.AddWin();
+            }
+            else if (game.Enemy.Deck.IsEmpty() || game.Enemy.HeroHealth <= 0)
+            {
+                game.Player.AddWin();
             }
 
-            for (int j = 12; j < 15; j++)
-            {
-                GameUtils.ClearConsoleLine(j);
-            }
-
-            for (int k = 16; k < 18; k++)
-            {
-                GameUtils.ClearConsoleLine(k);
-            }
-
-            GameUtils.WriteAt("Points", 16, 1, Alignment.Center);
-            GameUtils.WriteAt(string.Format(GameConstants.POINT_FORMAT, "Player", game.Player.Wins, game.NumberOfRounds), 0, 6);
-            GameUtils.WriteAt(string.Format(GameConstants.POINT_FORMAT, "Enemy", game.Enemy.Wins, game.NumberOfRounds), 0, 6, Alignment.Right);
-
-            if (game.Player.Deck.Cards.Count == 0 || game.Player.HeroHealth <= 0)
-            {
-                // Enemy wins
-                game.Enemy.IncrementWinNumber();
-            }
-            else if (game.Enemy.Deck.Cards.Count == 0 || game.Enemy.HeroHealth <= 0)
-            {
-                // Player wins
-                game.Player.IncrementWinNumber();
-            }
-
-            Thread.Sleep(3000);
+            Thread.Sleep(GameConstants.THREE_SECOND_DELAY);
 
             GameUtils.ClearConsoleLine(6);
-            GameUtils.WriteAt(string.Format(GameConstants.POINT_FORMAT, "Player", game.Player.Wins, game.NumberOfRounds), 0, 6);
-            GameUtils.WriteAt(string.Format(GameConstants.POINT_FORMAT, "Enemy", game.Enemy.Wins, game.NumberOfRounds), 0, 6, Alignment.Right);
 
-            Thread.Sleep(3000);
+            GameUtils.WriteAt(
+                string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_PLAYER_NAME, game.Player.Wins, game.NumberOfRounds), 
+                0, 
+                6
+            );
+
+            GameUtils.WriteAt(
+                string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_ENEMY_NAME, game.Enemy.Wins, game.NumberOfRounds), 
+                0, 
+                6, 
+                Alignment.Right
+            );
+
+            Thread.Sleep(GameConstants.THREE_SECOND_DELAY);
         }
+
+        //------------------------------------------------
+        // Match Winner Screen
+        //------------------------------------------------
 
         private void DrawPointWinnerScreen(Game game)
         {
-            GameUtils.WriteAt("Points", 16, 1, Alignment.Center);
+            GameUtils.WriteAt(GameConstants.POINTS_TITLE, 16, 1, Alignment.Center);
 
             if (game.Player.Wins > game.Enemy.Wins)
             {
-                GameUtils.WriteAt("Player = Winner!", 0, 6);
-                GameUtils.WriteAt(string.Format(GameConstants.POINT_FORMAT, "Enemy", game.Enemy.Wins, game.NumberOfRounds), 0, 6, Alignment.Right);
+                GameUtils.WriteAt(
+                    string.Format(GameConstants.WINNER_FORMAT, GameConstants.DEFAULT_PLAYER_NAME), 
+                    0, 
+                    6
+                );
+
+                GameUtils.WriteAt(
+                    string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_ENEMY_NAME, game.Enemy.Wins, game.NumberOfRounds), 
+                    0, 
+                    6, 
+                    Alignment.Right
+                );
             }
             else
             {
-                GameUtils.WriteAt(string.Format(GameConstants.POINT_FORMAT, "Player", game.Player.Wins, game.NumberOfRounds), 0, 6);
-                GameUtils.WriteAt("Enemy = Winner!", 0, 6, Alignment.Right);
+                GameUtils.WriteAt(
+                    string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_PLAYER_NAME, game.Player.Wins, game.NumberOfRounds), 
+                    0, 
+                    6
+                );
+
+                GameUtils.WriteAt(
+                    string.Format(GameConstants.WINNER_FORMAT, GameConstants.DEFAULT_ENEMY_NAME), 
+                    0, 
+                    6, 
+                    Alignment.Right
+                );
             }
 
             Console.SetCursorPosition(0, 16);
-            Console.WriteLine("Press any key to continue...");
+            Console.WriteLine(GameConstants.CONTINUE_MESSAGE);
+
             Console.ReadKey(true);
+
             Console.Clear();
+        }
+
+        //------------------------------------------------
+        // Clear Game Board
+        //------------------------------------------------
+
+        private void ClearGameBoard()
+        {
+            GameUtils.ClearConsoleLine(GameConstants.TURN_Y_POSITION);
+
+            int maxYPosition = GameConstants.PLAYER_STATS_Y_POSITION + GameConstants.PLAYER_STATS_BOX_WIDTH;
+            for (int i = GameConstants.PLAYER_STATS_Y_POSITION; i < maxYPosition; i++)
+                GameUtils.ClearConsoleLine(i);
+
+            maxYPosition = GameConstants.HAND_Y_POSITION + GameConstants.HAND_BOX_WIDTH;
+            for (int i = GameConstants.HAND_Y_POSITION; i < maxYPosition; i++)
+                GameUtils.ClearConsoleLine(i);
+
+            maxYPosition = GameConstants.ACTION_Y_POSITION + GameConstants.ACTION_BOX_WIDTH;
+            for (int i = GameConstants.ACTION_Y_POSITION; i < maxYPosition; i++)
+                GameUtils.ClearConsoleLine(i);
         }
     }
 }

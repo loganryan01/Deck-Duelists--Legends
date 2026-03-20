@@ -1,75 +1,157 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TextBasedCardGame
 {
+    /// <summary>
+    /// Handles the enemy's turn.
+    /// Responsible for drawing cards, selecting a card using AI logic,
+    /// applying the effect, and attacking the player.
+    /// </summary>
     public class EnemyTurnState : GameTurnState
     {
         public override void DoAction(Game game)
         {
+            //------------------------------------------------
+            // Draw game board
+            //------------------------------------------------
+
             GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
+
             if (game.IsLogEnabled)
             {
                 GameUtils.UpdateLog(game.Log);
             }
 
-            while (game.Enemy.Hand.Count < 3)
+            //------------------------------------------------
+            // Ensure enemy has 3 cards
+            //------------------------------------------------
+
+            while (game.Enemy.Hand.Count < GameConstants.MAX_HAND_SIZE)
             {
                 Card card = game.Enemy.Deck.DrawCard();
                 game.Enemy.Hand.Add(card);
             }
 
-            // Get card from enemy hand
-            int chosenCardIndex = -1;
-            var priorityList = game.Enemy.HeroHealth > 5 ? GameConstants.AI_OFFENSIVE_PRIORITY_LIST : GameConstants.AI_DEFENSIVE_PRIORITY_LIST;
-            for (int i = 0; i < 4; i++)
+            //------------------------------------------------
+            // Select card using AI priority logic
+            //------------------------------------------------
+
+            int chosenCardIndex = ChooseCard(game);
+
+            Card chosenCard = game.Enemy.Hand[chosenCardIndex];
+
+            //------------------------------------------------
+            // Apply card effect
+            //------------------------------------------------
+
+            ApplyCardEffect(game, chosenCard);
+
+            //------------------------------------------------
+            // Display enemy action
+            //------------------------------------------------
+
+            GameUtils.ClearConsoleLine(GameConstants.ACTION_Y_POSITION);
+            GameUtils.WriteAt(
+                string.Format(GameConstants.ENEMY_ACTION_FORMAT, chosenCard.Name), 
+                GameConstants.ACTION_X_POSITION,
+                GameConstants.ACTION_Y_POSITION
+            );
+
+            //------------------------------------------------
+            // Log enemy action
+            //------------------------------------------------
+
+            game.AddToLog(GameConstants.DEFAULT_ENEMY_NAME, game.Enemy.Hand[chosenCardIndex].Name);
+
+            //------------------------------------------------
+            // Remove card from hand
+            //------------------------------------------------
+
+            game.Enemy.Hand.RemoveAt(chosenCardIndex);
+
+            //------------------------------------------------
+            // Enemy attacks player
+            //------------------------------------------------
+
+            if (game.Enemy.HeroAttack > GameConstants.MINIMUM_ATTACK_NUMBER)
             {
-                chosenCardIndex = game.Enemy.Hand.FindIndex(x => x.EffectIndex == priorityList[i]);
+                game.Player.ModifyHeroHealth(-game.Enemy.HeroAttack);
+            }
+
+            //------------------------------------------------
+            // Delay before ending turn
+            //------------------------------------------------
+
+            Thread.Sleep(GameConstants.THREE_SECOND_DELAY);
+
+            //------------------------------------------------
+            // End turn
+            //------------------------------------------------
+
+            game.IncrementTurnNumber();
+
+            gameTurnStateManager.TransitionTo(new PostEnemyTurnState());
+        }
+
+        //------------------------------------------------
+        // AI Decision Logic
+        //------------------------------------------------
+
+        private int ChooseCard(Game game)
+        {
+            int chosenCardIndex = -1;
+
+            var priorityList = 
+                game.Enemy.HeroHealth > GameConstants.MINIMUM_ENEMY_OFFENSIVE_HEALTH 
+                ? GameConstants.AI_OFFENSIVE_PRIORITY_LIST 
+                : GameConstants.AI_DEFENSIVE_PRIORITY_LIST;
+
+            // Search enemy hand for highest priority card
+            for (int i = 0; i < priorityList.Count; i++)
+            {
+                chosenCardIndex = game.Enemy.Hand.FindIndex(
+                    x => x.Effect == priorityList[i]
+                );
+
                 if (chosenCardIndex != -1)
                 {
                     break;
                 }
             }
 
-            switch (game.Enemy.Hand[chosenCardIndex].EffectIndex)
+            // Fallback (should never happen, but prevents crashes)
+            if (chosenCardIndex == -1)
             {
-                case (int)CardEffect.IncreaseHeroAttack:
+                chosenCardIndex = 0;
+            }
+
+            return chosenCardIndex;
+        }
+
+        //------------------------------------------------
+        // Card Effect Resolution
+        //------------------------------------------------
+
+        private void ApplyCardEffect(Game game, Card card)
+        {
+            switch (card.Effect)
+            {
+                case CardEffect.IncreaseHeroAttack:
                     game.Enemy.IncrementHeroAttack();
                     break;
-                case (int)CardEffect.IncreaseHeroHealth:
-                    game.Enemy.IncrementHeroHealth();
+
+                case CardEffect.IncreaseHeroHealth:
+                    game.Enemy.ModifyHeroHealth(1);
                     break;
-                case (int)CardEffect.DecreaseEnemyAttack:
+
+                case CardEffect.DecreaseEnemyAttack:
                     game.Player.DecrementHeroAttack();
                     break;
-                case (int)CardEffect.DecreaseEnemyHealth:
-                    game.Player.DecrementHeroHealth();
+
+                case CardEffect.DecreaseEnemyHealth:
+                    game.Player.ModifyHeroHealth(-1);
                     break;
             }
-            GameUtils.ClearConsoleLine(16);
-            GameUtils.WriteAt(string.Format(GameConstants.ENEMY_ACTION_FORMAT, game.Enemy.Hand[chosenCardIndex].Name), 0, 16);
-
-            game.AddToLog("Enemy", game.Enemy.Hand[chosenCardIndex].Name);
-
-            game.Enemy.Hand.RemoveAt(chosenCardIndex);
-
-            // Attack the Player hero
-            if (game.Enemy.HeroAttack > 0)
-            {
-                game.Player.DecreaseHeroHealth(game.Enemy.HeroAttack);
-            }
-
-            // Wait 3 seconds before doing end turn checks
-            Thread.Sleep(3000);
-
-            // End of turn
-            game.IncrementTurnNumber();
-
-            gameTurnStateManager.TransitionTo(new PostEnemyTurnState());
         }
     }
 }

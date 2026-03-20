@@ -1,43 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TextBasedCardGame
 {
+    /// <summary>
+    /// Represents a player (or enemy) in the game.
+    /// 
+    /// Stores deck, hand, hero stats, and win count.
+    /// </summary>
     public class Player
     {
+        //-----------------------------------------------
+        // FIELDS & PROPERTIES
+        //-----------------------------------------------
+
         private Deck deck;
-        public Deck Deck 
-        { 
-            get { return deck; } 
-        }
+        public Deck Deck => deck;
 
         private readonly List<Card> hand;
-        public List<Card> Hand 
-        { 
-            get { return hand; } 
-        }
+        public List<Card> Hand => hand;
 
         private int heroHealth;
-        public int HeroHealth 
-        {
-            get { return heroHealth; }
-        }
+        public int HeroHealth => heroHealth;
 
         private int heroAttack;
-        public int HeroAttack 
-        { 
-            get { return heroAttack; }
-        }
+        public int HeroAttack => heroAttack;
 
         private int wins;
-        public int Wins 
-        { 
-            get { return wins; } 
-        }
+        public int Wins => wins;
+
+        //-----------------------------------------------
+        // CONSTRUCTOR
+        //-----------------------------------------------
 
         public Player()
         {
@@ -45,9 +38,16 @@ namespace TextBasedCardGame
             hand = new List<Card>();
             heroHealth = GameConstants.STARTING_HERO_HEALTH;
             heroAttack = GameConstants.STARTING_HERO_ATTACK;
-            wins = 0;
+            wins =GameConstants.STARTING_HERO_WINS;
         }
 
+        //-----------------------------------------------
+        // RESET
+        //-----------------------------------------------
+
+        /// <summary>
+        /// Resets the player's state for a new game.
+        /// </summary>
         public void Reset()
         {
             deck = new Deck();
@@ -55,6 +55,10 @@ namespace TextBasedCardGame
             heroHealth = GameConstants.STARTING_HERO_HEALTH;
             heroAttack = GameConstants.STARTING_HERO_ATTACK;
         }
+
+        //-----------------------------------------------
+        // HERO STAT MODIFIERS
+        //-----------------------------------------------
 
         public void IncrementHeroAttack()
         {
@@ -66,29 +70,29 @@ namespace TextBasedCardGame
             heroAttack--;
         }
 
-        public void IncrementHeroHealth()
+        public void ModifyHeroHealth(int amount)
         {
-            heroHealth++;
+            heroHealth += amount;
         }
 
-        public void DecrementHeroHealth()
-        {
-            heroHealth--;
-        }
+        //-----------------------------------------------
+        // WIN TRACKING
+        //-----------------------------------------------
 
-        public void DecreaseHeroHealth(int amount)
-        {
-            heroHealth -= amount;
-        }
-
-        public void IncrementWinNumber()
+        /// <summary>
+        /// Increments the player's win count.
+        /// </summary>
+        public void AddWin()
         {
             wins++;
         }
 
+        /// <summary>
+        /// Resets the player's win count.
+        /// </summary>
         public void ResetWinCount()
         {
-            wins = 0; 
+            wins = GameConstants.STARTING_HERO_WINS; 
         }
     }
 }
