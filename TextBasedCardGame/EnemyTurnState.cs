@@ -50,11 +50,11 @@ namespace TextBasedCardGame
             // Display enemy action
             //------------------------------------------------
 
-            GameUtils.ClearConsoleLine(GameConstants.ACTION_Y_POSITION);
+            GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION);
             GameUtils.WriteAt(
                 string.Format(GameConstants.ENEMY_ACTION_FORMAT, chosenCard.Name), 
-                GameConstants.ACTION_X_POSITION,
-                GameConstants.ACTION_Y_POSITION
+                0,
+                GameConstants.BOX_FOUR_Y_POSITION
             );
 
             //------------------------------------------------

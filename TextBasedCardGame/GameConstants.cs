@@ -86,26 +86,31 @@ namespace TextBasedCardGame
         public const int DEFAULT_NUMBER_OF_ROUNDS = 3;
         public const int MIN_NUMBER_OF_ROUNDS = 1;
 
-        // Y position of the turn/title box
-        public const int TURN_Y_POSITION = 1;
+        // Y position of box 1
+        public const int BOX_ONE_Y_POSITION = 1;
+        public const int BOX_ONE_WIDTH = 1;
 
-        // Y position of the player stats box and it's width
-        public const int PLAYER_STATS_Y_POSITION = 3;
-        public const int PLAYER_STATS_BOX_WIDTH = 8;
+        // Y position of box 2
+        public const int BOX_TWO_Y_POSITION = 3;
+        public const int BOX_TWO_WIDTH = 8;
 
-        // X and Y position of the player's hand
-        public const int HAND_X_POSITION = 0;
-        public const int HAND_Y_POSITION = 12;
-        public const int HAND_BOX_WIDTH = 3;
+        // Y position of box 3
+        public const int BOX_THREE_Y_POSITION = 12;
+        public const int BOX_THREE_WIDTH = 3;
 
-        // X and Y position to print the message of the enemy's action
-        public const int ACTION_X_POSITION = 0;
-        public const int ACTION_Y_POSITION = 16;
-        public const int ACTION_BOX_WIDTH = 2;
+        // Y position of box 4
+        public const int BOX_FOUR_Y_POSITION = 16;
+        public const int BOX_FOUR_WIDTH = 2;
 
-        // X and Y position of the messages during the round screen
-        public const int MESSAGE_X_POSITION = 16;
-        public const int MESSAGE_Y_POSITION = 6;
+        // Y position of log box 1
+        public const int LOG_BOX_ONE_Y_POSITION = 1;
+        public const int LOG_BOX_ONE_WIDTH = 1;
+
+        // Y position of log box 2
+        public const int LOG_BOX_TWO_Y_POSITION = 3;
+
+        // Width of the log section
+        public const int LOG_WIDTH = 18;
 
         public const int MINIMUM_ATTACK_NUMBER = 0;
 

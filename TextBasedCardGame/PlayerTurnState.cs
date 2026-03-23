@@ -40,12 +40,12 @@ namespace TextBasedCardGame
 
             foreach (Card card in game.Player.Hand)
             {
-                GameUtils.ClearConsoleLine(12 + index);
+                GameUtils.ClearConsoleLine(GameConstants.BOX_THREE_Y_POSITION + index);
 
                 GameUtils.WriteAt(
                     string.Format(GameConstants.CARD_PRINT_FORMAT, index + 1, card.Name), 
-                    0, 
-                    12 + index
+                    0,
+                    GameConstants.BOX_THREE_Y_POSITION + index
                 );
 
                 index++;
@@ -55,8 +55,8 @@ namespace TextBasedCardGame
             // Ask player which card to play
             //------------------------------------------------
 
-            GameUtils.ClearConsoleLine(16);
-            GameUtils.WriteAt(GameConstants.PLAYER_CHOOSE_MESSAGE, 0, 16);
+            GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION);
+            GameUtils.WriteAt(GameConstants.PLAYER_CHOOSE_MESSAGE, 0, GameConstants.BOX_FOUR_Y_POSITION);
 
             bool successfulInput = false;
 
@@ -144,7 +144,7 @@ namespace TextBasedCardGame
 
             for (int i = 0; i < GameConstants.MAX_HAND_SIZE; i++)
             {
-                GameUtils.ClearConsoleLine(12 + i);
+                GameUtils.ClearConsoleLine(GameConstants.BOX_THREE_Y_POSITION + i);
 
                 if (i < game.Player.Hand.Count)
                 {
@@ -153,7 +153,7 @@ namespace TextBasedCardGame
                     GameUtils.WriteAt(
                         string.Format(GameConstants.CARD_PRINT_FORMAT, i + 1, card.Name), 
                         0, 
-                        12 + i
+                        GameConstants.BOX_THREE_Y_POSITION + i
                     );
                 }
             }
@@ -162,8 +162,8 @@ namespace TextBasedCardGame
             // Clear input area
             //------------------------------------------------
 
-            GameUtils.ClearConsoleLine(16);
-            GameUtils.ClearConsoleLine(17);
+            GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION);
+            GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION + 1);
 
             //------------------------------------------------
             // Move to next turn state
@@ -181,10 +181,10 @@ namespace TextBasedCardGame
 
         private void PrintInvalidInput()
         {
-            GameUtils.ClearConsoleLine(16);
-            GameUtils.ClearConsoleLine(17);
+            GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION);
+            GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION + 1);
 
-            GameUtils.WriteAt(GameConstants.INVALID_INPUT_MESSAGE, 0, 16);
+            GameUtils.WriteAt(GameConstants.INVALID_INPUT_MESSAGE, 0, GameConstants.BOX_FOUR_Y_POSITION);
         }
     }
 }

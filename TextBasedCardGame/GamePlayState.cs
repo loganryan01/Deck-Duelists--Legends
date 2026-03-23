@@ -33,12 +33,10 @@ namespace TextBasedCardGame
 
             if (game.CurrentRound == 1)
             {
-                Console.Clear();
-
-                Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n");
-                Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n\n\n\n\n\n");
-                Console.WriteLine(GameConstants.SPLITTER_TEXT + "\n\n\n");
-                Console.WriteLine(GameConstants.SPLITTER_TEXT);
+                GameUtils.WriteAt(GameConstants.SPLITTER_TEXT, 0, 0);
+                GameUtils.WriteAt(GameConstants.SPLITTER_TEXT, 0, GameConstants.BOX_ONE_Y_POSITION + GameConstants.BOX_ONE_WIDTH);
+                GameUtils.WriteAt(GameConstants.SPLITTER_TEXT, 0, GameConstants.BOX_TWO_Y_POSITION + GameConstants.BOX_TWO_WIDTH);
+                GameUtils.WriteAt(GameConstants.SPLITTER_TEXT, 0, GameConstants.BOX_THREE_Y_POSITION + GameConstants.BOX_THREE_WIDTH);
 
                 if (game.IsLogEnabled)
                 {
@@ -56,7 +54,7 @@ namespace TextBasedCardGame
             // Ensure player has 3 cards in hand
             //------------------------------------------------
 
-            while (game.Player.Hand.Count < 3)
+            while (game.Player.Hand.Count < GameConstants.MAX_HAND_SIZE)
             {
                 Card card = game.Player.Deck.DrawCard();
                 game.Player.Hand.Add(card);
@@ -70,12 +68,12 @@ namespace TextBasedCardGame
 
             foreach (Card card in game.Player.Hand)
             {
-                GameUtils.ClearConsoleLine(GameConstants.HAND_Y_POSITION + index);
+                GameUtils.ClearConsoleLine(GameConstants.BOX_THREE_Y_POSITION + index);
 
                 GameUtils.WriteAt(
                     string.Format(GameConstants.CARD_PRINT_FORMAT, index + 1, card.Name),
-                    GameConstants.HAND_X_POSITION,
-                    GameConstants.HAND_Y_POSITION + index
+                    0,
+                    GameConstants.BOX_THREE_Y_POSITION + index
                 );
 
                 index++;
@@ -151,29 +149,30 @@ namespace TextBasedCardGame
 
         private void DrawRoundScreen(Game game)
         {
+            string introMessage = game.NumberOfRounds > 1 ? string.Format(GameConstants.ROUND_FORMAT, game.CurrentRound) : GameConstants.READY_MESSAGE;
+            int introMessageYPosition = GameConstants.BOX_TWO_Y_POSITION + GameConstants.BOX_TWO_WIDTH / 2 - 1;
+
             ClearGameBoard();
 
             // Show round number or ready message
             GameUtils.WriteAt(
-                    game.NumberOfRounds > 1 ? string.Format(GameConstants.ROUND_FORMAT, game.CurrentRound) : GameConstants.READY_MESSAGE,
-                    GameConstants.MESSAGE_X_POSITION,
-                    GameConstants.MESSAGE_Y_POSITION,
-                    Alignment.Center
+                introMessage,
+                (GameConstants.SPLITTER_TEXT.Length - introMessage.Length) / 2,
+                introMessageYPosition
             );
 
             Thread.Sleep(GameConstants.THREE_SECOND_DELAY);
 
-            GameUtils.ClearConsoleLine(GameConstants.MESSAGE_Y_POSITION);
+            GameUtils.ClearConsoleLine(introMessageYPosition);
             GameUtils.WriteAt(
-                GameConstants.FIGHT_MESSAGE, 
-                GameConstants.MESSAGE_X_POSITION, 
-                GameConstants.MESSAGE_Y_POSITION, 
-                Alignment.Center
+                GameConstants.FIGHT_MESSAGE,
+                (GameConstants.SPLITTER_TEXT.Length - GameConstants.FIGHT_MESSAGE.Length) / 2,
+                introMessageYPosition
             );
 
             Thread.Sleep(GameConstants.THREE_SECOND_DELAY);
 
-            GameUtils.ClearConsoleLine(GameConstants.MESSAGE_Y_POSITION);
+            GameUtils.ClearConsoleLine(introMessageYPosition);
         }
 
         //------------------------------------------------
@@ -182,21 +181,27 @@ namespace TextBasedCardGame
 
         private void DrawPointScreen(Game game)
         {
+            int pointYPosition = GameConstants.BOX_TWO_Y_POSITION + GameConstants.BOX_TWO_WIDTH / 2 - 1;
+            string enemyPoints = string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_ENEMY_NAME, game.Enemy.Wins, game.NumberOfRounds);
+
             ClearGameBoard();
 
-            GameUtils.WriteAt(GameConstants.POINTS_TITLE, 16, 1, Alignment.Center);
+            GameUtils.WriteAt(
+                GameConstants.POINTS_TITLE, 
+                (GameConstants.SPLITTER_TEXT.Length - GameConstants.POINTS_TITLE.Length) / 2, 
+                GameConstants.BOX_ONE_Y_POSITION
+            );
 
             GameUtils.WriteAt(
                 string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_PLAYER_NAME, game.Player.Wins, game.NumberOfRounds), 
                 0, 
-                6
+                pointYPosition
             );
 
             GameUtils.WriteAt(
-                string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_ENEMY_NAME, game.Enemy.Wins, game.NumberOfRounds), 
-                0, 
-                6, 
-                Alignment.Right
+                enemyPoints, 
+                GameConstants.SPLITTER_TEXT.Length - enemyPoints.Length,
+                pointYPosition
             );
 
             //------------------------------------------------
@@ -214,19 +219,18 @@ namespace TextBasedCardGame
 
             Thread.Sleep(GameConstants.THREE_SECOND_DELAY);
 
-            GameUtils.ClearConsoleLine(6);
+            GameUtils.ClearConsoleLine(pointYPosition);
 
             GameUtils.WriteAt(
                 string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_PLAYER_NAME, game.Player.Wins, game.NumberOfRounds), 
-                0, 
-                6
+                0,
+                pointYPosition
             );
 
             GameUtils.WriteAt(
-                string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_ENEMY_NAME, game.Enemy.Wins, game.NumberOfRounds), 
-                0, 
-                6, 
-                Alignment.Right
+                enemyPoints,
+                GameConstants.SPLITTER_TEXT.Length - enemyPoints.Length,
+                pointYPosition
             );
 
             Thread.Sleep(GameConstants.THREE_SECOND_DELAY);
@@ -238,41 +242,51 @@ namespace TextBasedCardGame
 
         private void DrawPointWinnerScreen(Game game)
         {
-            GameUtils.WriteAt(GameConstants.POINTS_TITLE, 16, 1, Alignment.Center);
+            int pointYPosition = GameConstants.BOX_TWO_Y_POSITION + GameConstants.BOX_TWO_WIDTH / 2 - 1;
+            string enemyPoints = string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_ENEMY_NAME, game.Enemy.Wins, game.NumberOfRounds);
+
+            GameUtils.WriteAt(
+                GameConstants.POINTS_TITLE,
+                (GameConstants.SPLITTER_TEXT.Length - GameConstants.POINTS_TITLE.Length) / 2,
+                GameConstants.BOX_ONE_Y_POSITION
+            );
 
             if (game.Player.Wins > game.Enemy.Wins)
             {
                 GameUtils.WriteAt(
                     string.Format(GameConstants.WINNER_FORMAT, GameConstants.DEFAULT_PLAYER_NAME), 
-                    0, 
-                    6
+                    0,
+                    pointYPosition
                 );
 
                 GameUtils.WriteAt(
-                    string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_ENEMY_NAME, game.Enemy.Wins, game.NumberOfRounds), 
-                    0, 
-                    6, 
-                    Alignment.Right
+                    enemyPoints,
+                    GameConstants.SPLITTER_TEXT.Length - enemyPoints.Length,
+                    pointYPosition
                 );
             }
-            else
+            else if (game.Player.Wins < game.Enemy.Wins)
             {
                 GameUtils.WriteAt(
                     string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_PLAYER_NAME, game.Player.Wins, game.NumberOfRounds), 
-                    0, 
-                    6
+                    0,
+                    pointYPosition
                 );
 
+                enemyPoints = string.Format(GameConstants.WINNER_FORMAT, GameConstants.DEFAULT_ENEMY_NAME);
+
                 GameUtils.WriteAt(
-                    string.Format(GameConstants.WINNER_FORMAT, GameConstants.DEFAULT_ENEMY_NAME), 
-                    0, 
-                    6, 
-                    Alignment.Right
+                    string.Format(GameConstants.WINNER_FORMAT, GameConstants.DEFAULT_ENEMY_NAME),
+                    GameConstants.SPLITTER_TEXT.Length - enemyPoints.Length, 
+                    pointYPosition
                 );
             }
 
-            Console.SetCursorPosition(0, 16);
-            Console.WriteLine(GameConstants.CONTINUE_MESSAGE);
+            GameUtils.WriteAt(
+                GameConstants.CONTINUE_MESSAGE, 
+                0, 
+                GameConstants.BOX_FOUR_Y_POSITION
+            );
 
             Console.ReadKey(true);
 
@@ -285,18 +299,18 @@ namespace TextBasedCardGame
 
         private void ClearGameBoard()
         {
-            GameUtils.ClearConsoleLine(GameConstants.TURN_Y_POSITION);
+            GameUtils.ClearConsoleLine(GameConstants.BOX_ONE_Y_POSITION);
 
-            int maxYPosition = GameConstants.PLAYER_STATS_Y_POSITION + GameConstants.PLAYER_STATS_BOX_WIDTH;
-            for (int i = GameConstants.PLAYER_STATS_Y_POSITION; i < maxYPosition; i++)
+            int maxYPosition = GameConstants.BOX_TWO_Y_POSITION + GameConstants.BOX_TWO_WIDTH;
+            for (int i = GameConstants.BOX_TWO_Y_POSITION; i < maxYPosition; i++)
                 GameUtils.ClearConsoleLine(i);
 
-            maxYPosition = GameConstants.HAND_Y_POSITION + GameConstants.HAND_BOX_WIDTH;
-            for (int i = GameConstants.HAND_Y_POSITION; i < maxYPosition; i++)
+            maxYPosition = GameConstants.BOX_THREE_Y_POSITION + GameConstants.BOX_THREE_WIDTH;
+            for (int i = GameConstants.BOX_THREE_Y_POSITION; i < maxYPosition; i++)
                 GameUtils.ClearConsoleLine(i);
 
-            maxYPosition = GameConstants.ACTION_Y_POSITION + GameConstants.ACTION_BOX_WIDTH;
-            for (int i = GameConstants.ACTION_Y_POSITION; i < maxYPosition; i++)
+            maxYPosition = GameConstants.BOX_FOUR_Y_POSITION + GameConstants.BOX_FOUR_WIDTH;
+            for (int i = GameConstants.BOX_FOUR_Y_POSITION; i < maxYPosition; i++)
                 GameUtils.ClearConsoleLine(i);
         }
     }

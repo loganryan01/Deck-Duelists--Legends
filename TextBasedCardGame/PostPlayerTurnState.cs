@@ -40,11 +40,11 @@ namespace TextBasedCardGame
 
                 GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
 
-                GameUtils.ClearConsoleLine(16);
-                GameUtils.WriteAt(GameConstants.PLAYER_WIN_MESSAGE, 0, 16);
+                GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION);
+                GameUtils.WriteAt(GameConstants.PLAYER_WIN_MESSAGE, 0, GameConstants.BOX_FOUR_Y_POSITION);
 
-                GameUtils.ClearConsoleLine(17);
-                GameUtils.WriteAt(GameConstants.CONTINUE_MESSAGE, 0, 17);
+                GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION + 1);
+                GameUtils.WriteAt(GameConstants.CONTINUE_MESSAGE, 0, GameConstants.BOX_FOUR_Y_POSITION + 1);
 
                 Console.ReadKey(true);
 
