@@ -9,8 +9,6 @@ namespace TextBasedCardGame
     /// </summary>
     public class GamePlayState : GameState
     {
-        private static readonly Random random = new Random();
-        
         public override void DoAction(Game game)
         {
             //------------------------------------------------
@@ -140,7 +138,7 @@ namespace TextBasedCardGame
         /// <returns></returns>
         private static EGameTurnState DetermineFirstTurn()
         {
-            return (EGameTurnState)random.Next(2);
+            return (EGameTurnState)GameRandom.Instance.Next(2);
         }
 
         //------------------------------------------------

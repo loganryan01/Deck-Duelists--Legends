@@ -15,8 +15,6 @@ namespace TextBasedCardGame
         
         private readonly List<Card> cards = new List<Card>();
 
-        private static readonly Random random = new Random();
-
         /// <summary>
         /// Gets the list of cards in the deck.
         /// </summary>
@@ -93,7 +91,7 @@ namespace TextBasedCardGame
         /// </summary>
         public Card DrawCard()
         {
-            int randomIndex = random.Next(cards.Count);
+            int randomIndex = GameRandom.Instance.Next(cards.Count);
 
             Card chosenCard = cards[randomIndex];
             cards.Remove(chosenCard);
