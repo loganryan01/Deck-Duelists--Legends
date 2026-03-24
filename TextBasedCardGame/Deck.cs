@@ -44,19 +44,19 @@ namespace TextBasedCardGame
 
                 if (i < GameConstants.MAX_DECK_SIZE / 4)
                 {
-                    card = new Card(GameConstants.INCREASE_HERO_ATTACK_CARD_NAME, CardEffect.IncreaseHeroAttack);
+                    card = new Card(GameConstants.INCREASE_HERO_ATTACK_CARD_NAME, new IncreaseAttackEffect());
                 }
                 else if (i < GameConstants.MAX_DECK_SIZE / 2)
                 {
-                    card = new Card(GameConstants.INCREASE_HERO_HEALTH_CARD_NAME, CardEffect.IncreaseHeroHealth);
+                    card = new Card(GameConstants.INCREASE_HERO_HEALTH_CARD_NAME, new IncreaseHealthEffect());
                 }
                 else if (i < GameConstants.MAX_DECK_SIZE * 3 / 4)
                 {
-                    card = new Card(GameConstants.DECREASE_ENEMY_ATTACK_CARD_NAME, CardEffect.DecreaseEnemyAttack);
+                    card = new Card(GameConstants.DECREASE_ENEMY_ATTACK_CARD_NAME, new DecreaseAttackEffect());
                 }
                 else
                 {
-                    card = new Card(GameConstants.DECREASE_ENEMY_HEALTH_CARD_NAME, CardEffect.DecreaseEnemyHealth);
+                    card = new Card(GameConstants.DECREASE_ENEMY_HEALTH_CARD_NAME, new DecreaseHealthEffect());
                 }
 
                 cards.Add(card);

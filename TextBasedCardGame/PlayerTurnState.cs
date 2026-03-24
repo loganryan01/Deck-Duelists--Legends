@@ -98,24 +98,7 @@ namespace TextBasedCardGame
             // Apply card effect
             //------------------------------------------------
 
-            switch (chosenCard.Effect)
-            {
-                case CardEffect.IncreaseHeroAttack:
-                    game.Player.IncrementHeroAttack();
-                    break;
-
-                case CardEffect.IncreaseHeroHealth:
-                    game.Player.ModifyHeroHealth(1);
-                    break;
-
-                case CardEffect.DecreaseEnemyAttack:
-                    game.Enemy.DecrementHeroAttack();
-                    break;
-
-                case CardEffect.DecreaseEnemyHealth:
-                    game.Enemy.ModifyHeroHealth(-1);
-                    break;
-            }
+            chosenCard.Play(game, game.Player, game.Enemy);
 
             //------------------------------------------------
             // Log action

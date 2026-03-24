@@ -44,7 +44,7 @@ namespace TextBasedCardGame
             // Apply card effect
             //------------------------------------------------
 
-            ApplyCardEffect(game, chosenCard);
+            chosenCard.Play(game, game.Enemy, game.Player);
 
             //------------------------------------------------
             // Display enemy action
@@ -110,7 +110,7 @@ namespace TextBasedCardGame
             for (int i = 0; i < priorityList.Count; i++)
             {
                 chosenCardIndex = game.Enemy.Hand.FindIndex(
-                    x => x.Effect == priorityList[i]
+                    x => x.Effect.GetType() == priorityList[i]
                 );
 
                 if (chosenCardIndex != -1)
@@ -126,32 +126,6 @@ namespace TextBasedCardGame
             }
 
             return chosenCardIndex;
-        }
-
-        //------------------------------------------------
-        // Card Effect Resolution
-        //------------------------------------------------
-
-        private void ApplyCardEffect(Game game, Card card)
-        {
-            switch (card.Effect)
-            {
-                case CardEffect.IncreaseHeroAttack:
-                    game.Enemy.IncrementHeroAttack();
-                    break;
-
-                case CardEffect.IncreaseHeroHealth:
-                    game.Enemy.ModifyHeroHealth(1);
-                    break;
-
-                case CardEffect.DecreaseEnemyAttack:
-                    game.Player.DecrementHeroAttack();
-                    break;
-
-                case CardEffect.DecreaseEnemyHealth:
-                    game.Player.ModifyHeroHealth(-1);
-                    break;
-            }
         }
     }
 }

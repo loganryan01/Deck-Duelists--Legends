@@ -225,6 +225,8 @@ namespace TextBasedCardGame
                 pointYPosition
             );
 
+            enemyPoints = string.Format(GameConstants.POINT_FORMAT, GameConstants.DEFAULT_ENEMY_NAME, game.Enemy.Wins, game.NumberOfRounds);
+
             GameUtils.WriteAt(
                 enemyPoints,
                 GameConstants.SPLITTER_TEXT.Length - enemyPoints.Length,

@@ -14,14 +14,14 @@
         private readonly string name;
         public string Name => name;
 
-        private readonly CardEffect effect;
-        public CardEffect Effect => effect;
+        private readonly ICardEffect effect;
+        public ICardEffect Effect => effect;
 
         //------------------------------------------------
         // CONSTRUCTOR
         //------------------------------------------------
 
-        public Card(string name, CardEffect effect)
+        public Card(string name, ICardEffect effect)
         {
             this.name = name;
             this.effect = effect;
@@ -37,6 +37,14 @@
         public override string ToString()
         {
             return name;
+        }
+
+        /// <summary>
+        /// Play the effect of this card.
+        /// </summary>
+        public void Play(Game game, Player self, Player opponent)
+        {
+            effect.Apply(game, self, opponent);
         }
     }
 }

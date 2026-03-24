@@ -3,17 +3,6 @@
 namespace TextBasedCardGame
 {
     /// <summary>
-    /// Represents all possible card effects in the game.
-    /// </summary>
-    public enum CardEffect
-    {
-        IncreaseHeroAttack,
-        IncreaseHeroHealth,
-        DecreaseEnemyAttack,
-        DecreaseEnemyHealth,
-    }
-    
-    /// <summary>
     /// Stores all constant values used throughout the game.
     /// Includes UI text, gameplay values, and AI behavior.
     /// </summary>
@@ -51,23 +40,23 @@ namespace TextBasedCardGame
         /// <summary>
         /// Priority list used when the enemy is playing offensively.
         /// </summary>
-        public static readonly IImmutableList<CardEffect> AI_OFFENSIVE_PRIORITY_LIST = 
+        public static readonly IImmutableList<Type> AI_OFFENSIVE_PRIORITY_LIST =
             ImmutableList.Create(
-                CardEffect.IncreaseHeroAttack, 
-                CardEffect.DecreaseEnemyHealth, 
-                CardEffect.DecreaseEnemyAttack, 
-                CardEffect.IncreaseHeroHealth
+                typeof(IncreaseAttackEffect),
+                typeof(DecreaseHealthEffect),
+                typeof(DecreaseAttackEffect),
+                typeof(IncreaseHealthEffect)
             );
 
         /// <summary>
         /// Priority list used when the enemy is playing defensively.
         /// </summary>
-        public static readonly IImmutableList<CardEffect> AI_DEFENSIVE_PRIORITY_LIST = 
+        public static readonly IImmutableList<Type> AI_DEFENSIVE_PRIORITY_LIST = 
             ImmutableList.Create(
-                CardEffect.IncreaseHeroHealth, 
-                CardEffect.DecreaseEnemyAttack, 
-                CardEffect.IncreaseHeroAttack, 
-                CardEffect.DecreaseEnemyHealth
+                typeof(IncreaseHealthEffect),
+                typeof(DecreaseAttackEffect),
+                typeof(IncreaseAttackEffect),
+                typeof(DecreaseHealthEffect)
             );
 
         //------------------------------------------------
