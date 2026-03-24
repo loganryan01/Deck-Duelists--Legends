@@ -38,7 +38,7 @@ namespace TextBasedCardGame
 
                 if (game.IsLogEnabled)
                 {
-                    GameUtils.DrawLog();
+                    GameLogRenderer.DrawLog();
                 }
             }
 
@@ -92,7 +92,7 @@ namespace TextBasedCardGame
 
             if (game.IsLogEnabled)
             {
-                GameUtils.ClearLog();
+                GameLogRenderer.ClearLog();
             }
 
             //------------------------------------------------

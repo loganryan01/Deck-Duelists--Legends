@@ -15,11 +15,11 @@ namespace TextBasedCardGame
             // Draw game board
             //------------------------------------------------
 
-            GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
+            GameRenderer.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
 
             if (game.IsLogEnabled)
             {
-                GameUtils.UpdateLog(game.Log);
+                GameLogRenderer.UpdateLog(game.Log);
             }
 
             //------------------------------------------------

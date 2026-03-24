@@ -25,20 +25,20 @@ namespace TextBasedCardGame
 
                 if (game.IsLogEnabled)
                 {
-                    GameUtils.UpdateLog(game.Log);
+                    GameLogRenderer.UpdateLog(game.Log);
                 }
 
                 //------------------------------------------------
                 // Display KO animation
                 //------------------------------------------------
 
-                GameUtils.DrawKOScreen();
+                AnimationRenderer.DrawKOScreen();
 
                 //------------------------------------------------
                 // Redraw board and show defeat message
                 //------------------------------------------------
 
-                GameUtils.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
+                GameRenderer.DrawGameBoard(game.Player, game.Enemy, game.TurnNumber);
 
                 GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION);
                 GameUtils.WriteAt(GameConstants.PLAYER_LOSE_MESSAGE, 0, GameConstants.BOX_FOUR_Y_POSITION);
