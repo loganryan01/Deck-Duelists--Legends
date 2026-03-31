@@ -10,12 +10,12 @@ namespace TextBasedCardGame
     {
         public override void DoAction(Game game)
         {
-            foreach (var s in GameConstants.TITLE)
-            {
-                Console.WriteLine(s);
-            }
-            Console.WriteLine();
-            Console.WriteLine(string.Format(GameConstants.GAMES_FORMAT, game.CurrentFormat.ToLower()));
+            GameUtils.WriteAt(
+                string.Format(GameConstants.GAMES_FORMAT, game.CurrentFormat.ToLower()), 
+                0, 
+                GameConstants.TITLE.Length + 1
+            );
+            Console.SetCursorPosition(0, GameConstants.TITLE.Length + 2);
 
             bool successfulInput = false;
             while (!successfulInput)
@@ -30,18 +30,25 @@ namespace TextBasedCardGame
                         Console.CursorVisible = false;
                         successfulInput = true;
 
-                        Console.Clear();
+                        GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + 1);
+                        GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + 2);
+                        GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + 3);
+
                         game.SetNumberOfRounds(playerInput);
                         gameStateManager.TransitionTo(new GameSettingsState(), game);
                     }
                     else
                     {
-                        Console.WriteLine(GameConstants.INVALID_INPUT_MESSAGE);
+                        GameUtils.WriteAt(GameConstants.INVALID_INPUT_MESSAGE, 0, GameConstants.TITLE.Length + 2);
+                        GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + 3);
+                        Console.SetCursorPosition(0, GameConstants.TITLE.Length + 3);
                     }
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine(GameConstants.INVALID_INPUT_MESSAGE);
+                    GameUtils.WriteAt(GameConstants.INVALID_INPUT_MESSAGE, 0, GameConstants.TITLE.Length + 2);
+                    GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + 3);
+                    Console.SetCursorPosition(0, GameConstants.TITLE.Length + 3);
                 }
             }
         }

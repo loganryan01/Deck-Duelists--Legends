@@ -57,6 +57,7 @@ namespace TextBasedCardGame
 
             GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION);
             GameUtils.WriteAt(GameConstants.PLAYER_CHOOSE_MESSAGE, 0, GameConstants.BOX_FOUR_Y_POSITION);
+            Console.SetCursorPosition(0, GameConstants.BOX_FOUR_Y_POSITION + 1);
 
             bool successfulInput = false;
 
@@ -157,6 +158,7 @@ namespace TextBasedCardGame
 
             GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION);
             GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION + 1);
+            GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION + 2);
 
             //------------------------------------------------
             // Move to next turn state
@@ -178,6 +180,7 @@ namespace TextBasedCardGame
             GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION + 1);
 
             GameUtils.WriteAt(GameConstants.INVALID_INPUT_MESSAGE, 0, GameConstants.BOX_FOUR_Y_POSITION);
+            Console.SetCursorPosition(0, GameConstants.BOX_FOUR_Y_POSITION + 2);
         }
     }
 }

@@ -299,8 +299,6 @@ namespace TextBasedCardGame
             );
 
             Console.ReadKey(true);
-
-            Console.Clear();
         }
 
         //------------------------------------------------

@@ -11,18 +11,22 @@ namespace TextBasedCardGame
         public override void DoAction(Game game)
         {
             // Print the game title
-            foreach (var s in GameConstants.TITLE)
+            for (int i = 0; i < GameConstants.TITLE.Length; i++)
             {
-                Console.WriteLine(s);
+                GameUtils.WriteAt(GameConstants.TITLE[i], 0, i);
             }
-
-            Console.WriteLine();
 
             // Print menu options
             for (int i = 0; i < GameConstants.GAME_MENU_OPTIONS.Length; i++)
             {
-                Console.WriteLine(string.Format(GameConstants.CARD_PRINT_FORMAT, (i + 1).ToString(), GameConstants.GAME_MENU_OPTIONS[i]));
+                GameUtils.WriteAt(
+                    string.Format(GameConstants.CARD_PRINT_FORMAT, (i + 1).ToString(), GameConstants.GAME_MENU_OPTIONS[i]),
+                    0,
+                    GameConstants.TITLE.Length + i + 1
+                );
             }
+
+            Console.SetCursorPosition(0, GameConstants.TITLE.Length + GameConstants.GAME_MENU_OPTIONS.Length + 1);
 
             bool successfulInput = false;
 
@@ -43,7 +47,7 @@ namespace TextBasedCardGame
                             break;
 
                         case 2:
-                            OpenSettings();
+                            OpenSettings(game);
                             successfulInput = true;
                             break;
 
@@ -64,6 +68,16 @@ namespace TextBasedCardGame
             }
         }
 
+        public override void Enter(Game game)
+        {
+            // Empty
+        }
+
+        public override void Exit(Game game)
+        {
+            // Empty
+        }
+
         /// <summary>
         /// Starts the gameplay state.
         /// </summary>
@@ -81,7 +95,11 @@ namespace TextBasedCardGame
         private void OpenSettings(Game game)
         {
             Console.CursorVisible = false;
-            Console.Clear();
+
+            for (int i = 0; i < GameConstants.GAME_MENU_OPTIONS.Length + 2; i++)
+            {
+                GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + i + 1);
+            }
 
             gameStateManager.TransitionTo(new GameSettingsState(), game);
         }
@@ -100,7 +118,13 @@ namespace TextBasedCardGame
         /// </summary>
         private void PrintInvalidInput()
         {
-            Console.WriteLine(GameConstants.INVALID_INPUT_MESSAGE);
+            GameUtils.WriteAt(
+                GameConstants.INVALID_INPUT_MESSAGE, 
+                0, 
+                GameConstants.TITLE.Length + GameConstants.GAME_MENU_OPTIONS.Length + 1
+            );
+            GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + GameConstants.GAME_MENU_OPTIONS.Length + 2);
+            Console.SetCursorPosition(0, GameConstants.TITLE.Length + GameConstants.GAME_MENU_OPTIONS.Length + 2);
         }
     }
 }

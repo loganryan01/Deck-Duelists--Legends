@@ -206,6 +206,7 @@ namespace TextBasedCardGame
         /// <param name="settingsIndex"></param>
         public void PrintChosenFormat(int settingsIndex)
         {
+            Console.SetCursorPosition(0, GameConstants.TITLE.Length + settingsIndex);
             Console.ResetColor();
             Console.Write(string.Format(GameConstants.INDEX_PRINT_FORMAT, settingsIndex));
 
@@ -228,7 +229,6 @@ namespace TextBasedCardGame
             }
 
             Console.ResetColor();
-            Console.WriteLine();
         }
 
         /// <summary>
