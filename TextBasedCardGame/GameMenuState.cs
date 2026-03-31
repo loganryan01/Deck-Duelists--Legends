@@ -38,7 +38,7 @@ namespace TextBasedCardGame
                     switch (playerInput)
                     {
                         case 1:
-                            StartGame();
+                            StartGame(game);
                             successfulInput = true;
                             break;
 
@@ -67,23 +67,23 @@ namespace TextBasedCardGame
         /// <summary>
         /// Starts the gameplay state.
         /// </summary>
-        private void StartGame()
+        private void StartGame(Game game)
         {
             Console.CursorVisible = false;
             Console.Clear();
 
-            gameStateManager.TransitionTo(new GamePlayState());
+            gameStateManager.TransitionTo(new GamePlayState(), game);
         }
 
         /// <summary>
         /// Opens the settings menu.
         /// </summary>
-        private void OpenSettings()
+        private void OpenSettings(Game game)
         {
             Console.CursorVisible = false;
             Console.Clear();
 
-            gameStateManager.TransitionTo(new GameSettingsState());
+            gameStateManager.TransitionTo(new GameSettingsState(), game);
         }
 
         /// <summary>

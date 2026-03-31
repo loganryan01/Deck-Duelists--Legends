@@ -60,8 +60,18 @@ namespace TextBasedCardGame
                 // Continue to enemy pre-turn state
                 //------------------------------------------------
 
-                gameTurnStateManager.TransitionTo(new PreEnemyTurnState());
+                gameTurnStateManager.TransitionTo(new PreEnemyTurnState(), game);
             }
+        }
+
+        public override void Enter(Game game)
+        {
+            // Empty
+        }
+
+        public override void Exit(Game game)
+        {
+            // Empty
         }
     }
 }

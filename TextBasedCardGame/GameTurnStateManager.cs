@@ -24,17 +24,22 @@
         /// <summary>
         /// Creates a new turn state manager with an initial state.
         /// </summary>
-        public GameTurnStateManager(GameTurnState state)
+        public GameTurnStateManager(GameTurnState state, Game game)
         {
-            TransitionTo(state);
+            TransitionTo(state, game);
         }
 
         /// <summary>
         /// Switches to a new turn state.
         /// </summary>
-        public void TransitionTo(GameTurnState state)
+        public void TransitionTo(GameTurnState state, Game game)
         {
+            if (this.state != null)
+            {
+                this.state.Exit(game);
+            }
             this.state = state;
+            this.state.Enter(game);
 
             // Give the state access to the manager
             // so it can trigger transitions.

@@ -13,18 +13,23 @@
         /// <summary>
         /// Creates a new GameStateManager and sets the starting state.
         /// </summary>
-        public GameStateManager(GameState gameState) 
+        public GameStateManager(GameState gameState, Game game) 
         {
-            TransitionTo(gameState);
+            TransitionTo(gameState, game);
         }
 
         /// <summary>
         /// Switches the game to a new state.
         /// </summary>
         /// <param name="gameState"></param>
-        public void TransitionTo(GameState gameState)
+        public void TransitionTo(GameState gameState, Game game)
         {
+            if (this.gameState != null)
+            {
+                this.gameState.Exit(game);
+            }
             this.gameState = gameState;
+            this.gameState.Enter(game);
 
             // Give the state access to this manager so it can trigger transitions
             this.gameState.SetManager(this);

@@ -86,7 +86,7 @@ namespace TextBasedCardGame
         /// </summary>
         public void StartGame()
         {
-            GameStateManager gameStateManager = new GameStateManager(new GameMenuState());
+            GameStateManager gameStateManager = new GameStateManager(new GameMenuState(), this);
 
             while (isRunning)
             {

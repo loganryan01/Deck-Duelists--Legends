@@ -26,5 +26,16 @@
         /// </summary>
         /// <param name="game"></param>
         public abstract void DoAction(Game game);
+
+        /// <summary>
+        /// Executes when entering the state
+        /// </summary>
+        public abstract void Enter(Game game);
+
+        /// <summary>
+        /// Executes when exiting the state
+        /// </summary>
+        /// <param name="game"></param>
+        public abstract void Exit(Game game);
     }
 }

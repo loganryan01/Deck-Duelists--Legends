@@ -32,7 +32,7 @@ namespace TextBasedCardGame
 
                         Console.Clear();
                         game.SetNumberOfRounds(playerInput);
-                        gameStateManager.TransitionTo(new GameSettingsState());
+                        gameStateManager.TransitionTo(new GameSettingsState(), game);
                     }
                     else
                     {
@@ -44,6 +44,16 @@ namespace TextBasedCardGame
                     Console.WriteLine(GameConstants.INVALID_INPUT_MESSAGE);
                 }
             }
+        }
+
+        public override void Enter(Game game)
+        {
+            // Empty
+        }
+
+        public override void Exit(Game game)
+        {
+            // Empty
         }
     }
 }

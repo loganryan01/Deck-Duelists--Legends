@@ -87,6 +87,16 @@ namespace TextBasedCardGame
             }
         }
 
+        public override void Enter(Game game)
+        {
+            // Empty
+        }
+
+        public override void Exit(Game game)
+        {
+            // Empty
+        }
+
         //------------------------------------------------
         // Card Resolution
         //------------------------------------------------
@@ -152,7 +162,7 @@ namespace TextBasedCardGame
             // Move to next turn state
             //------------------------------------------------
 
-            gameTurnStateManager.TransitionTo(new PostPlayerTurnState());
+            gameTurnStateManager.TransitionTo(new PostPlayerTurnState(), game);
 
             // Increment turn number
             game.IncrementTurnNumber();

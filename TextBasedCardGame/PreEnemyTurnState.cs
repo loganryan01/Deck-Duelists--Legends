@@ -60,8 +60,18 @@ namespace TextBasedCardGame
                 // Continue to enemy turn
                 //------------------------------------------------
 
-                gameTurnStateManager.TransitionTo(new EnemyTurnState());
+                gameTurnStateManager.TransitionTo(new EnemyTurnState(), game);
             }
+        }
+
+        public override void Enter(Game game)
+        {
+            // Empty
+        }
+
+        public override void Exit(Game game)
+        {
+            // Empty
         }
     }
 }

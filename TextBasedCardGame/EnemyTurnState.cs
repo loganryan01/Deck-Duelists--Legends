@@ -90,7 +90,17 @@ namespace TextBasedCardGame
 
             game.IncrementTurnNumber();
 
-            gameTurnStateManager.TransitionTo(new PostEnemyTurnState());
+            gameTurnStateManager.TransitionTo(new PostEnemyTurnState(), game);
+        }
+
+        public override void Enter(Game game)
+        {
+            // Empty
+        }
+
+        public override void Exit(Game game)
+        {
+            // Empty
         }
 
         //------------------------------------------------

@@ -60,8 +60,18 @@ namespace TextBasedCardGame
                 // Start the next player turn cycle
                 //------------------------------------------------
 
-                gameTurnStateManager.TransitionTo(new PrePlayerTurnState());
+                gameTurnStateManager.TransitionTo(new PrePlayerTurnState(), game);
             }
+        }
+
+        public override void Enter(Game game)
+        {
+            // Empty
+        }
+
+        public override void Exit(Game game)
+        {
+            // Empty
         }
     }
 }

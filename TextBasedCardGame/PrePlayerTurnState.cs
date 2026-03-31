@@ -60,8 +60,18 @@ namespace TextBasedCardGame
                 // Continue to player's turn
                 //------------------------------------------------
 
-                gameTurnStateManager.TransitionTo(new PlayerTurnState());
+                gameTurnStateManager.TransitionTo(new PlayerTurnState(), game);
             }
+        }
+
+        public override void Enter(Game game)
+        {
+            // Empty
+        }
+
+        public override void Exit(Game game)
+        {
+            // Empty
         }
     }
 }

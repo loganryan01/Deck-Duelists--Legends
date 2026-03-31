@@ -23,7 +23,7 @@ namespace TextBasedCardGame
                 : new PreEnemyTurnState();
 
             GameTurnStateManager gameTurnStateManager = 
-                new GameTurnStateManager(gameTurnStrategy);
+                new GameTurnStateManager(gameTurnStrategy, game);
 
             //------------------------------------------------
             // Draw initial screen for the first round
@@ -128,8 +128,18 @@ namespace TextBasedCardGame
 
                 Console.Clear();
 
-                gameStateManager.TransitionTo(new GameMenuState());
+                gameStateManager.TransitionTo(new GameMenuState(), game);
             }
+        }
+
+        public override void Enter(Game game)
+        {
+            // Empty
+        }
+
+        public override void Exit(Game game)
+        {
+            // Empty
         }
 
         /// <summary>

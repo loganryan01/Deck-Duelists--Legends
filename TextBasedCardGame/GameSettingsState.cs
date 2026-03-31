@@ -44,7 +44,7 @@
                         successfulInput = true;
 
                         Console.Clear();
-                        gameStateManager.TransitionTo(new GameSettingsRoundState());
+                        gameStateManager.TransitionTo(new GameSettingsRoundState(), game);
                     }
                     else if (playerInput == 4)
                     {
@@ -52,7 +52,7 @@
                         successfulInput = true;
 
                         Console.Clear();
-                        gameStateManager.TransitionTo(new GameMenuState());
+                        gameStateManager.TransitionTo(new GameMenuState(), game);
                     }
                     else
                     {
@@ -64,6 +64,16 @@
                     Console.WriteLine(GameConstants.INVALID_INPUT_MESSAGE);
                 }
             }
+        }
+
+        public override void Enter(Game game)
+        {
+            // Empty
+        }
+
+        public override void Exit(Game game)
+        {
+            // Empty
         }
     }
 }
