@@ -60,32 +60,31 @@ namespace TextBasedCardGame
             Console.SetCursorPosition(0, GameConstants.BOX_FOUR_Y_POSITION + 1);
 
             bool successfulInput = false;
+            ConsoleKeyInfo playerInput;
+            int chosenCardIndex = -1;
 
             while (!successfulInput)
             {
-                try
+                playerInput = Console.ReadKey(true);
+
+                switch (playerInput.Key)
                 {
-                    Console.CursorVisible = true;
-
-                    int chosenCardIndex = Convert.ToInt32(Console.ReadLine()) - 1;
-
-                    if (chosenCardIndex >= 0 && chosenCardIndex <= game.Player.Hand.Count)
-                    {
-                        Console.CursorVisible = false;
+                    case ConsoleKey.D1:
+                    case ConsoleKey.D2:
+                    case ConsoleKey.D3:
+                        chosenCardIndex = Convert.ToInt32(playerInput.Key - ConsoleKey.D1);
                         successfulInput = true;
-
-                        PlayCard(game, chosenCardIndex);
-                    }
-                    else
-                    {
-                        PrintInvalidInput();
-                    }
-                }
-                catch (Exception)
-                {
-                    PrintInvalidInput();
+                        break;
+                    case ConsoleKey.NumPad1:
+                    case ConsoleKey.NumPad2:
+                    case ConsoleKey.NumPad3:
+                        chosenCardIndex = Convert.ToInt32(playerInput.Key - ConsoleKey.NumPad1);
+                        successfulInput = true;
+                        break;
                 }
             }
+
+            PlayCard(game, chosenCardIndex);
         }
 
         public override void Enter(Game game)

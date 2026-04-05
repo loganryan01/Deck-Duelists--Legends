@@ -29,41 +29,32 @@ namespace TextBasedCardGame
             Console.SetCursorPosition(0, GameConstants.TITLE.Length + GameConstants.GAME_MENU_OPTIONS.Length + 1);
 
             bool successfulInput = false;
+            ConsoleKeyInfo playerInput;
 
             // Continue asking for input until a valid option is chosen
             while (!successfulInput)
             {
-                try
+                playerInput = Console.ReadKey(true);
+
+                switch (playerInput.Key)
                 {
-                    Console.CursorVisible = true;
+                    case ConsoleKey.D1:
+                    case ConsoleKey.NumPad1:
+                        StartGame(game);
+                        successfulInput = true;
+                        break;
 
-                    int playerInput = Convert.ToInt32(Console.ReadLine());
+                    case ConsoleKey.D2:
+                    case ConsoleKey.NumPad2:
+                        OpenSettings(game);
+                        successfulInput = true;
+                        break;
 
-                    switch (playerInput)
-                    {
-                        case 1:
-                            StartGame(game);
-                            successfulInput = true;
-                            break;
-
-                        case 2:
-                            OpenSettings(game);
-                            successfulInput = true;
-                            break;
-
-                        case 3:
-                            ExitGame(game);
-                            successfulInput = true;
-                            break;
-
-                        default:
-                            PrintInvalidInput();
-                            break;
-                    }
-                }
-                catch
-                {
-                    PrintInvalidInput();
+                    case ConsoleKey.D3:
+                    case ConsoleKey.NumPad3:
+                        ExitGame(game);
+                        successfulInput = true;
+                        break;
                 }
             }
         }
@@ -83,7 +74,6 @@ namespace TextBasedCardGame
         /// </summary>
         private void StartGame(Game game)
         {
-            Console.CursorVisible = false;
             Console.Clear();
 
             gameStateManager.TransitionTo(new GamePlayState(), game);
@@ -94,8 +84,6 @@ namespace TextBasedCardGame
         /// </summary>
         private void OpenSettings(Game game)
         {
-            Console.CursorVisible = false;
-
             for (int i = 0; i < GameConstants.GAME_MENU_OPTIONS.Length + 2; i++)
             {
                 GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + i + 1);
@@ -109,22 +97,7 @@ namespace TextBasedCardGame
         /// </summary>
         private void ExitGame(Game game)
         {
-            Console.CursorVisible = false;
             game.CloseGame();
-        }
-
-        /// <summary>
-        /// Displays an invalid input message.
-        /// </summary>
-        private void PrintInvalidInput()
-        {
-            GameUtils.WriteAt(
-                GameConstants.INVALID_INPUT_MESSAGE, 
-                0, 
-                GameConstants.TITLE.Length + GameConstants.GAME_MENU_OPTIONS.Length + 1
-            );
-            GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + GameConstants.GAME_MENU_OPTIONS.Length + 2);
-            Console.SetCursorPosition(0, GameConstants.TITLE.Length + GameConstants.GAME_MENU_OPTIONS.Length + 2);
         }
     }
 }

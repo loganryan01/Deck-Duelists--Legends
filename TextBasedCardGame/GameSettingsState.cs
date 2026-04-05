@@ -23,35 +23,35 @@
             Console.SetCursorPosition(0, GameConstants.TITLE.Length + 5);
 
             bool successfulInput = false;
+            ConsoleKeyInfo playerInput;
+
             while (!successfulInput)
             {
-                try
-                {
-                    Console.CursorVisible = true;
-                    int playerInput = Convert.ToInt32(Console.ReadLine());
+                playerInput = Console.ReadKey(true);
 
-                    if (playerInput == 1)
-                    {
-                        Console.CursorVisible = false;
+                switch (playerInput.Key)
+                {
+                    case ConsoleKey.D1:
+                    case ConsoleKey.NumPad1:
                         successfulInput = true;
 
                         GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + 1);
                         GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + 5);
 
                         game.EnableLog(!game.IsLogEnabled);
-                    }
-                    else if (playerInput == 2)
-                    {
-                        Console.CursorVisible = false;
+                        break;
+
+                    case ConsoleKey.D2:
+                    case ConsoleKey.NumPad2:
                         successfulInput = true;
 
                         GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + 5);
 
                         game.UpdateChosenFormat();
-                    }
-                    else if (playerInput == 3)
-                    {
-                        Console.CursorVisible = false;
+                        break;
+
+                    case ConsoleKey.D3:
+                    case ConsoleKey.NumPad3:
                         successfulInput = true;
 
                         for (int i = 1; i < 6; i++)
@@ -59,10 +59,10 @@
                             GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + i + 1);
                         }
                         gameStateManager.TransitionTo(new GameSettingsRoundState(), game);
-                    }
-                    else if (playerInput == 4)
-                    {
-                        Console.CursorVisible = false;
+                        break;
+
+                    case ConsoleKey.D4:
+                    case ConsoleKey.NumPad4:
                         successfulInput = true;
 
                         for (int i = 1; i < 7; i++)
@@ -70,19 +70,7 @@
                             GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + i);
                         }
                         gameStateManager.TransitionTo(new GameMenuState(), game);
-                    }
-                    else
-                    {
-                        GameUtils.WriteAt(GameConstants.INVALID_INPUT_MESSAGE, 0, GameConstants.TITLE.Length + 5);
-                        GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + 6);
-                        Console.SetCursorPosition(0, GameConstants.TITLE.Length + 6);
-                    }
-                }
-                catch (Exception)
-                {
-                    GameUtils.WriteAt(GameConstants.INVALID_INPUT_MESSAGE, 0, GameConstants.TITLE.Length + 5);
-                    GameUtils.ClearConsoleLine(GameConstants.TITLE.Length + 6);
-                    Console.SetCursorPosition(0, GameConstants.TITLE.Length + 6);
+                        break;
                 }
             }
         }
