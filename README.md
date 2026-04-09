@@ -1,4 +1,4 @@
-# Text Based Card Game
+# Deck Duelists: Legends
 
 A turn-based card battler where you strengthen your hero and weaken your enemy before clashing in combat.
 
