@@ -12,15 +12,15 @@ Players choose cards each turn to stengthen themselves or weaken their opponent 
 
 ```
 =======================================|=======================================|
-Turn: 3				       |	          Log                  |
+Turn: 3				                   |	              Log                  |
 =======================================|=======================================|
               Enemy Hero:   	       |Turn 1: Enemy used "+1 Hero Attack"    |
-Health = 18                Attack = 2  |Turn 2: Player used "-1 Enemy Health"  |
-				       |                                       |
-				       |                                       |
-				       |                                       |
-				       |                                       |
-Health = 18     	   Attack = 1  |                                       |
+Health = 18                  Attack = 2|Turn 2: Player used "-1 Enemy Health"  |
+				                       |                                       |
+				                       |                                       |
+				                       |                                       |
+				                       |                                       |
+Health = 18     	         Attack = 1|                                       |
              Player Hero:              |                                       |
 =======================================|                                       |
 [1] +1 Hero Attack             	       |                                       |
