@@ -46,6 +46,11 @@ namespace TextBasedCardGame
                 GameUtils.ClearConsoleLine(GameConstants.BOX_FOUR_Y_POSITION + 1);
                 GameUtils.WriteAt(GameConstants.CONTINUE_MESSAGE, 0, GameConstants.BOX_FOUR_Y_POSITION + 1);
 
+                // Clear input buffer
+                while (Console.KeyAvailable)
+                {
+                    Console.ReadKey(true);
+                }
                 Console.ReadKey(true);
 
                 //------------------------------------------------

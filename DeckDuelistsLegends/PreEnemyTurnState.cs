@@ -50,6 +50,11 @@ namespace TextBasedCardGame
                 // End the game
                 //------------------------------------------------
 
+                // Clear input buffer
+                while (Console.KeyAvailable)
+                {
+                    Console.ReadKey(true);
+                }
                 Console.ReadKey(true);
 
                 game.StopGame();

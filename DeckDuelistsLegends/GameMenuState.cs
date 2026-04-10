@@ -34,6 +34,11 @@ namespace TextBasedCardGame
             // Continue asking for input until a valid option is chosen
             while (!successfulInput)
             {
+                // Clear input buffer
+                while (Console.KeyAvailable)
+                {
+                    Console.ReadKey(true);
+                }
                 playerInput = Console.ReadKey(true);
 
                 switch (playerInput.Key)

@@ -299,6 +299,11 @@ namespace TextBasedCardGame
                 GameConstants.BOX_FOUR_Y_POSITION
             );
 
+            // Clear input buffer
+            while (Console.KeyAvailable)
+            {
+                Console.ReadKey(true);
+            }
             Console.ReadKey(true);
         }
 
