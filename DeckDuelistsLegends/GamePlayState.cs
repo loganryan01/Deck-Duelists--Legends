@@ -125,6 +125,7 @@ namespace TextBasedCardGame
 
                 game.Player.ResetWinCount();
                 game.Enemy.ResetWinCount();
+                game.ResetCurrentRound();
 
                 Console.Clear();
 

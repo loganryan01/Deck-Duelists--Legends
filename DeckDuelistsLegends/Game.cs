@@ -196,6 +196,14 @@ namespace TextBasedCardGame
             currentRound++;
         }
 
+        /// <summary>
+        /// Reset number of rounds to 1
+        /// </summary>
+        public void ResetCurrentRound()
+        {
+            currentRound = 1;
+        }
+
         //==================================================
         // Game Format Settings
         //==================================================
