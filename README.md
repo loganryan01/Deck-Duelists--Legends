@@ -216,3 +216,9 @@ This is a solo project developed using C# and .NET 8.
 This project was created as a text-based card game focused on simple mechanics, strategic decision-making, and clean console-based gameplay.
 
 All systems, including gameplay logic, UI, and game flow, were built from scratch.
+
+## Feedback & Bug Reports
+
+Found a bug? Have ideas or feedback?
+
+Submit it here: [https://forms.gle/T3TEcySCm3Jx7VpR8]
