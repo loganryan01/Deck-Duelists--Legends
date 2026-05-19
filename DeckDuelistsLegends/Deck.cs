@@ -38,28 +38,17 @@ namespace TextBasedCardGame
         /// </summary>
         private void CreateDeck()
         {
-            for (int i = 0; i < GameConstants.MAX_DECK_SIZE; i++)
+            CardDatabaseData database = CardLoader.LoadCards(Path.Combine("Data", "cards.json"));
+
+            while (cards.Count < GameConstants.MAX_DECK_SIZE)
             {
-                Card card;
-
-                if (i < GameConstants.MAX_DECK_SIZE / 4)
+                foreach (var data in database.Cards)
                 {
-                    card = new Card(GameConstants.INCREASE_HERO_ATTACK_CARD_NAME, new IncreaseAttackEffect());
+                    for (int i = 0; i < GameConstants.MAX_DECK_SIZE / 4; i++)
+                    {
+                        cards.Add(CardFactory.CreateCard(data));
+                    }
                 }
-                else if (i < GameConstants.MAX_DECK_SIZE / 2)
-                {
-                    card = new Card(GameConstants.INCREASE_HERO_HEALTH_CARD_NAME, new IncreaseHealthEffect());
-                }
-                else if (i < GameConstants.MAX_DECK_SIZE * 3 / 4)
-                {
-                    card = new Card(GameConstants.DECREASE_ENEMY_ATTACK_CARD_NAME, new DecreaseAttackEffect());
-                }
-                else
-                {
-                    card = new Card(GameConstants.DECREASE_ENEMY_HEALTH_CARD_NAME, new DecreaseHealthEffect());
-                }
-
-                cards.Add(card);
             }
         }
 

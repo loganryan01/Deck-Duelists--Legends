@@ -1,0 +1,20 @@
+{
+	"cards": [
+		{
+			"name": "+1 Hero Attack",
+			"effect": "IncreaseAttack"
+		},
+		{
+			"name": "+1 Hero Health",
+			"effect": "IncreaseHealth"
+		},
+		{
+			"name": "-1 Enemy Attack",
+			"effect": "DecreaseAttack"
+		},
+		{
+			"name": "-1 Enemy Health",
+			"effect": "DecreaseHealth"
+		}
+	]
+}
